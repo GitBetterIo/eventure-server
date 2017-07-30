@@ -1,6 +1,6 @@
 
 
-module.exports = ({registration, registrationRepository}) => {
+module.exports = ({Registration, registrationRepository}) => {
 
   return {
     findById: () => ({}),
@@ -9,12 +9,22 @@ module.exports = ({registration, registrationRepository}) => {
 
     /**
      * Registers a participant for an eventure
-     * @param  {Object} eventure    Contains eventure/list/group
+     * @param  {Object} eventureDesc    Contains eventure/list/group
      * @param  {Participant} participant The participant to register
      * @return {Registration}             The newly created registration
      */
-    newRegistration(eventure, participant) {
+    newRegistration(eventureDesc, participant) {
+      const {eventure, listing, group} = eventureDesc;
 
+      const regData = {
+        participantId: participant.id,
+        eventureId: eventure.id,
+        listingId: listing.id,
+        groupId: (group) ? group.id : null,
+      }
+
+      const reg = Registration.create(regData);
+      return registrationRepository.save(reg);
     },
 
     /**

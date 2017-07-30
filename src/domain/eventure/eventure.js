@@ -1,5 +1,5 @@
 // eventure.js
-const utils = require('../lib/utils');
+const utils = require('../../lib/utils');
 
 module.exports.create = function(eventureData) {
   const missing = utils.getMissingFields(eventureData, [

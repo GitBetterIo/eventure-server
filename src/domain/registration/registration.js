@@ -1,4 +1,4 @@
-const utils = require('../lib/utils');
+const utils = require('../../lib/utils');
 
 /**
  * Registration Lifecycle
@@ -10,11 +10,11 @@ const STATUS_ACTIVE = 'active';
 const STATUS_COMPLETE = 'complete';
 const STATUS_CANCELLED = 'cancelled';
 
-module.exports.create(regData) {
+module.exports.create = function(regData) {
   const missing = utils.getMissingFields(regData, [
     'clientId',
     'eventureId',
-    'eventureListId',
+    'listingId',
     'participantId'
   ]);
 
@@ -27,7 +27,7 @@ module.exports.create(regData) {
     status: STATUS_PENDING
   }
 
-  return Object.assing({}, defaults, regData, init);
+  return Object.assign({}, defaults, regData, init);
 }
 
 
