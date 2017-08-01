@@ -10,6 +10,11 @@ const STATUS_ACTIVE = 'active';
 const STATUS_COMPLETE = 'complete';
 const STATUS_CANCELLED = 'cancelled';
 
+module.exports.STATUS_PENDING = STATUS_PENDING;
+module.exports.STATUS_ACTIVE = STATUS_ACTIVE;
+module.exports.STATUS_COMPLETE = STATUS_COMPLETE;
+module.exports.STATUS_CANCELLED = STATUS_CANCELLED;
+
 module.exports.create = function(regData) {
   const missing = utils.getMissingFields(regData, [
     'clientId',

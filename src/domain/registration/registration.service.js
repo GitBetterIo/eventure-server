@@ -16,13 +16,19 @@ module.exports = ({Registration, registrationRepository}) => {
     newRegistration(eventureDesc, participant) {
       const {eventure, listing, group} = eventureDesc;
 
+      const registrationFee = FeeScheduleService
+        .findByEventure(eventure.id)
+        .then(schedule => {
+          return FeeSchedule.match(schedule, eventureDesc, participant)
+        });
+
       const regData = {
         participantId: participant.id,
         eventureId: eventure.id,
         listingId: listing.id,
         groupId: (group) ? group.id : null,
       }
-
+      
       const reg = Registration.create(regData);
       return registrationRepository.save(reg);
     },
@@ -36,7 +42,7 @@ module.exports = ({Registration, registrationRepository}) => {
      * @return {[type]}                 [description]
      */
     transfer: (registration, toParticipantId) => {
-
+      Registration.transfer(registration)
     },
 
     /**

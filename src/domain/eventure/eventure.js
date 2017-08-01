@@ -1,6 +1,18 @@
 // eventure.js
 const utils = require('../../lib/utils');
 
+/**
+ * {
+ * 	clientId: String,
+ * 	name: String,
+ * 	createdBy: String,
+ * 	startDate: DateTime,
+ * 	endDate: DateTime,
+ * 	createdOn: DateTime,
+ * 	modifiedOn: DateTime,
+ * }
+ */
+
 module.exports.create = function(eventureData) {
   const missing = utils.getMissingFields(eventureData, [
     'clientId',
@@ -12,7 +24,7 @@ module.exports.create = function(eventureData) {
   }
 
   const defaults = {
-    capacity: 0,          // No limit
+    createDate: new Date(),
   }
 
 

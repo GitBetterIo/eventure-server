@@ -16,5 +16,22 @@ describe('Registration', () => {
       const reg = Registration.create(data);
       assert.isOk(reg);
     })
+  });
+
+  describe('status changes', () => {
+    const data = {
+      clientId: 'a',
+      eventureId: 'b',
+      listingId: 'c',
+      participantId: 'd',
+    };
+
+    it('has an initial status of pending', () => {
+      const reg = Registration.create(data);
+      assert.equal(reg.status, Registration.STATUS_PENDING);
+    })
+
+    it('cancels a registration', () => {
+    })
   })
 })
