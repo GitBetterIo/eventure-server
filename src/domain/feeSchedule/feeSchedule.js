@@ -2,40 +2,52 @@ const utils = require('../../lib/utils');
 const isPlainObject = require('lodash/isPlainObject')
 
 
-module.exports.create = function create(feeData) {
-  feeData = feeData || {};
+module.exports.create = function create(options) {
+  options = options || {};
 
-  const defaults = {
-    startDate: new Date(),
-    endDate: null,
-    rules: [],
-  }
-
-  const rules = (feeData.rules && feeData.rules.length)
-    ? feeData.rules.map(createFeeRule)
+  const rules = (options.rules && options.rules.length)
+    ? options.rules.map(createFeeRule)
     : [];
 
-  return Object.assign({}, defaults, feeData, {rules});
+  const defaults = {};
+
+  return Object.assign({}, defaults, options, {rules});
 }
 
 
-function createFeeRule(ruleData) {
-  const missing = utils.getMissingFields(ruleData, ['fee', 'pattern']);
+/**
+ * Create a fee rule from passed options
+ * @param  {[type]} ruleData [description]
+ * @return {[type]}          [description]
+ */
+function createFeeRule(options) {
+  const missing = utils.getMissingFields(options, ['listingId', 'amount', 'startDate', 'endDate']);
   if (missing.length) {
     throw new Error(`Cannot create fee schedule rule: missing fields [${missing.join(', ')}]`);
   }
 
   const defaults = { }
-
-  return Object.assign({}, defaults, ruleData);
+  return Object.assign({}, defaults, options);
 }
 module.exports.createFeeRule = createFeeRule;
 
 
-module.exports.addRule = function(schedule, ruleData) {
-  const rules = schedule.rules.concat(createFeeRule(ruleData));
+/**
+ * Creates a rule and adds it to the schedule
+ * @param  {[type]} schedule [description]
+ * @param  {[type]} ruleData [description]
+ * @return {[type]}          [description]
+ */
+module.exports.addRule = function(schedule, rule) {
+  if (schedule.listingId !== rule.listingId) {
+    throw new Error(`Cannot add Fee Schedule Rule: wrong listingId`);
+  }
+
+  const rules = schedule.rules.concat(createFeeRule(rule));
   return Object.assign({}, schedule, {rules})
 }
+
+
 
 module.exports.match = function(schedule, resource) {
   const matchingRule = scheule.rules.find(rule => matchRule(rule, resource));

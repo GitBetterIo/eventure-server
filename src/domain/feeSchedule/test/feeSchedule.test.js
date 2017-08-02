@@ -12,8 +12,9 @@ describe.only('FeeSchedule', () => {
     })
 
     it('crates a fee schedule with an existing list of rules', () => {
-      const rule = {pattern: {listingId: 'abc'}, fee: 123};
+      const rule = {listingId: 123, startDate: '2017-01-01', endDate: '2017-02-01', amount: 123};
       const sched = FeeSchedule.create({
+        listingId: 123,
         rules: [rule]
       });
 
@@ -26,30 +27,26 @@ describe.only('FeeSchedule', () => {
       assert.throws(() => FeeSchedule.create({ rules: [rule] }))
     });
 
-    it('assigns fee schedule defaults', () => {
-      const sched = FeeSchedule.create({});
-
-      assert.isOk(isDate(sched.startDate));
-      assert.isArray(sched.rules);
-      assert.equal(sched.rules.length, 0);
-    })
 
     it('creates a new fee rule', () => {
-      const fee = 123;
-      const pattern = {listingId: 'abc'};
-      const rule = FeeSchedule.createFeeRule({fee, pattern});
+      const listingId = 'abc';
+      const amount = 123;
 
-      assert.deepEqual(rule.pattern, pattern);
-      assert.equal(rule.fee, 123)
+      const rule = FeeSchedule.createFeeRule({listingId, amount, startDate: '2017-01-01', endDate: '2017-02-01'});
+
+      assert.equal(rule.amount, amount)
+      assert.equal(rule.listingId, listingId)
     })
   })
 
   describe('managing rules', () => {
     it('adds a rule to the schedule', () => {
-      const sched = FeeSchedule.create({});
-      const fee = 123;
-      const pattern = {listingId: 'abc'};
-      const rule = FeeSchedule.createFeeRule({fee, pattern});
+      const amount = 123;
+      const listingId = 'abc';
+      const startDate = '2017-01-01';
+      const endDate = '2017-02-01';
+      const sched = FeeSchedule.create({listingId});
+      const rule = FeeSchedule.createFeeRule({listingId, amount, startDate, endDate});
 
       assert.equal(sched.rules.length, 0);
       const newSched = FeeSchedule.addRule(sched, rule)
