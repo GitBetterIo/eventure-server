@@ -1,4 +1,4 @@
-
+const Promise = require('bluebird');
 
 module.exports = ({Registration, registrationRepository}) => {
 
@@ -16,11 +16,13 @@ module.exports = ({Registration, registrationRepository}) => {
     newRegistration(eventureDesc, participant) {
       const {eventure, listing, group} = eventureDesc;
 
-      const registrationFee = FeeScheduleService
-        .findByEventure(eventure.id)
-        .then(schedule => {
-          return FeeSchedule.match(schedule, eventureDesc, participant)
-        });
+      // TODO: next steps
+      // const registrationFee = FeeScheduleService
+      //   .findByListing(listing.id)
+      //   .then(schedule => {
+      //     return FeeSchedule.match(schedule, eventureDesc, participant)
+      //   });
+
 
       const regData = {
         participantId: participant.id,
@@ -28,8 +30,14 @@ module.exports = ({Registration, registrationRepository}) => {
         listingId: listing.id,
         groupId: (group) ? group.id : null,
       }
-      
-      const reg = Registration.create(regData);
+      const reg = Promise.try(() => Registration.create(regData));
+
+
+      // TODO: next steps
+      // const invoice = Promise.all([reg, registrationFee])
+      //   .then(([reg, registrationFee]) => Accounting.invoice.createForRegistration(reg, registrationFee, participant));
+
+
       return registrationRepository.save(reg);
     },
 

@@ -17,7 +17,7 @@ const registrationService = makeService(mock);
 describe('Registration Service', () => {
   describe('newRegistration()', () => {
     it("creates a new registration for a participant", done => {
-      const participant = { id: 'participantId' }
+      const participant = { id: 'pabc' }
       const eventureDesc = {
         eventure: {
           id: 'eventure_a',
@@ -32,8 +32,8 @@ describe('Registration Service', () => {
 
       registrationService.newRegistration(eventureDesc, participant)
         .then(registration => {
-          console.log(registration);
           assert.isOk(registration);
+          assert.equal(registration.participantId, participant.id)
           done();
         })
         .catch(done);
@@ -41,6 +41,6 @@ describe('Registration Service', () => {
   });
 
   describe('transfer()', () => {
-    
+
   })
 });

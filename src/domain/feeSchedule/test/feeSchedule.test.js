@@ -4,7 +4,7 @@ const {isDate} = require('lodash');
 const {assert} = chai;
 
 
-describe.only('FeeSchedule', () => {
+describe('FeeSchedule', () => {
   describe('creating', () => {
     it('creates a fee schedule', () => {
       const sched = FeeSchedule.create({});
