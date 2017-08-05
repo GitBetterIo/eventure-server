@@ -8,5 +8,8 @@ module.exports = (config, {db}) => {
   return {
     userService,
     authService,
+
+    // Useful for testing
+    userRepository,
   };
 }

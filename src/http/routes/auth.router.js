@@ -8,10 +8,6 @@ module.exports = (config, application) => {
   const passport = require('./passport')(userService);
 
   router.post('/login',
-    function(req, res, next) {
-      console.log("IN LOGIN ROUTE");
-      next();
-    },
     passport.authenticate('local'),
     function(req, res, next) {
       res.json({user: req.user});

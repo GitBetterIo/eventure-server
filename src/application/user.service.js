@@ -2,13 +2,13 @@ const bcrypt = require('bcrypt');
 
 
 
-const setPassword = (plaintextPassword, user) => {
+const setPassword = (user, plaintextPassword) => {
   const salt = bcrypt.genSaltSync(10);
-  return Object.assign({}, user, {password_hash: bcrypt.hashSync(plaintextPassword, salt)});
+  return Object.assign({}, user, {passwordHash: bcrypt.hashSync(plaintextPassword, salt)});
 }
 
 const passwordMatches = (plaintextPassword, user) => {
-  return bcrypt.compareSync(plaintextPassword, user.password_hash)
+  return bcrypt.compareSync(plaintextPassword, user.passwordHash)
 }
 
 const register = (userData) => {
@@ -24,7 +24,7 @@ const register = (userData) => {
     .then(user => {
       if (user) throw new Error(`User ${username} already exists`);
 
-      const savedUserData = setPassword(userData.password, userData);
+      const savedUserData = setPassword(userData, userData.password);
       return userRepository.save(savedUserData)
     })
 }

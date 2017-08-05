@@ -1,10 +1,10 @@
 
-const USER_TABLE = 'ev_user';
+const USER_TABLE = 'user_login';
 
 module.exports = db => ({
   findById: id => find(db, {id}, {limit:1}).then(getFirst),
   findByUsername: username => find(db, {username}, {limit:1}).then(getFirst),
-  create: userData => create(db, userData),
+  save: (userData, options) => save(db, userData, options),
 })
 
 
@@ -32,19 +32,49 @@ function find(db, query, options) {
   return db.query(sql, query);
 }
 
-function create(db, data, options) {
-  const sql = `INSERT INTO ${USER_TABLE}
-    (username, password_hash, email, first_name, last_name, created, modified) VALUES (
-      ${db.escape(data.username)},
-      ${db.escape(data.password_hash)},
-      ${db.escape(data.email)},
-      ${db.escape(data.first_name)},
-      ${db.escape(data.last_name)},
-      ${new Date()},
-      ${new Date()},
-    )`;
+function save(db, userData, options) {
+  return (userData.id)
+    ? update(db, userData, options)
+    : create(db, userData, options);
+}
 
-  return db.query(sql);
+function create(db, data, options) {
+
+  const defaults = {
+    username: null,
+    passwordHash: null,
+    email: null,
+    firstName: null,
+    lastName: null,
+    created: new Date(),
+    modified: new Date()
+  }
+
+  const createData = Object.assign({}, defaults, data);
+
+
+  const sql = `INSERT INTO ${USER_TABLE}
+    (username, password_hash, email, first_name, last_name, created, modified) VALUES
+    ($[username], $[passwordHash], $[email], $[firstName], $[lastName], $[created], $[modified])`;
+
+  return db.query(sql, createData);
+}
+
+function update(db, data, options) {
+  data.modified = new Date();
+
+  const sql = `UPDATE ${USER_TABLE}
+    SET
+      username=$[username],
+      password_hash=$[passwordHash],
+      email=$[email],
+      first_name=$[firstName],
+      last_name=$[lastName],
+      modified=$[modified]
+    WHERE
+      id=$[id]`;
+
+  return db.query(sql, data);
 }
 
 

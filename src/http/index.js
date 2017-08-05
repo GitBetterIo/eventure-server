@@ -38,22 +38,26 @@ module.exports = (config, infrastructure, application, domain) => {
   app.use(authService.passport.initialize());
   app.use(authService.passport.session());
 
+  app.get('/info/ping', function(req, res, next) {
+    res.json({pong: 1});
+  });
+
   app.use('/api/v1', router);
   app.use(errorHandler);
 
 
   app.start = function() {
-    db.connect()
-    .then(obj => {
-        obj.done(); // success, release the connection;
-        console.log(`${chalk.green('✓')} Db Connection successful`);
-        app.listen(config.port, () => {
-          console.log(`${chalk.green('✓')} App ${config.appName} is listening on port ${config.port} in mode ${config.env}`);
-        });
-    })
-    .catch(error => {
-        console.log('ERROR:', error);
-    });
+    return db.connect()
+      .then(obj => {
+          obj.done(); // success, release the connection;
+          console.log(`${chalk.green('✓')} Db Connection successful`);
+          app.listen(config.port, () => {
+            console.log(`${chalk.green('✓')} App ${config.appName} is listening on port ${config.port} in mode ${config.env}`);
+          });
+      })
+      .catch(error => {
+          console.log('ERROR:', error);
+      });
 
   }
 
