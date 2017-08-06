@@ -15,18 +15,15 @@ exports.setup = function(options, seedLink) {
 };
 
 exports.up = function(db) {
-  db.createTable('session', {
-    columns: {
-      sid: {type: 'string', notNull: true},
-      sess: {type: 'json', notNull: true},
-      expire: {type: 'timestamp', notNull: true},
-    }
+  db.createTable('user_token', {
+    token: {type: 'uuid', primaryKey: true},
+    user_id: {type: 'bigint', notNull: true},
   })
   return null;
 };
 
 exports.down = function(db) {
-  db.dropTable('session');
+  db.dropTable('user_token');
   return null;
 };
 

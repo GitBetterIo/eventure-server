@@ -2,7 +2,7 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 
 
-module.exports = (userService) => {
+module.exports = ({userService}) => {
 
   passport.serializeUser((user, done) => {
     done(null, user.id);
@@ -24,7 +24,7 @@ module.exports = (userService) => {
           if (!user) {
             return done(null, false, { msg: `User ${username} not found.` });
           }
-          if (!user.matchPassword(password)) {
+          if (!userService.passwordMatches(password, user)) {
             return done(null, false, { msg: 'Invalid username or password.' });
           }
 

@@ -37,4 +37,33 @@ describe.only('Authentication Routes', () => {
   });
 
 
+  describe("Login with username and password", () => {
+
+    it("Successfully logs in and receives a token", done => {
+      chai.request(server)
+        .post('/api/v1/auth/login')
+        .send({username: testUser, password: testPass})
+        .then(res => {
+          assert.propertyVal(res, 'status', 200);
+          assert.isString(res.body.token);
+          done();
+        })
+        .catch(done);
+    })
+
+    it("rejects bad password", done => {
+      chai.request(server)
+        .post('/api/v1/auth/login')
+        .send({username: testUser, password: testPass + 'abc'})
+        .then(res => {
+          done(new Error('Should have return unauthorized'))
+        })
+        .catch((err) => {
+          assert.propertyVal(err.response, 'status', 401);
+          done()
+        });
+    })
+  })
+
+
 });

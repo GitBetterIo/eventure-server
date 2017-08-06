@@ -34,7 +34,7 @@ exports.up = function(db) {
 };
 
 exports.down = function(db) {
-  db.dropTable('users');
+  db.dropTable('user_login');
   return null;
 };
 

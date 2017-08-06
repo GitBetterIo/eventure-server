@@ -1,9 +1,11 @@
 
 const USER_TABLE = 'user_login';
+const TOKEN_TABLE = 'user_token';
 
 module.exports = db => ({
   findById: id => find(db, {id}, {limit:1}).then(getFirst),
   findByUsername: username => find(db, {username}, {limit:1}).then(getFirst),
+  findByToken: token => find(db, {token}, {limit:1}).then(getFirst),
   save: (userData, options) => save(db, userData, options),
 })
 
@@ -11,18 +13,21 @@ module.exports = db => ({
 function find(db, query, options) {
 
   const whereClauses = [];
-  if (query.id) whereClauses.push('id=${id}');
-  if (query.username) whereClauses.push('username=${username}');
-  if (query.password_reset_token) whereClauses.push('password_reset_token=${password_reset_token}');
+  if (query.id) whereClauses.push('u.id=${id}');
+  if (query.username) whereClauses.push('u.username=${username}');
+  if (query.password_reset_token) whereClauses.push('u.password_reset_token=${password_reset_token}');
+  if (query.token) whereClause.push('token.token=${token}')
   const whereClause = (whereClauses.length) ? 'WHERE ' + whereClauses.join(' AND ') : '';
+
+  const joinClause = (query.token) ? `LEFT JOIN ${TOKEN_TABLE} token on token.user_id = u.id` : '';
 
   const limitClause = 'LIMIT ' + ((options.limit) ? options.limit : 20);
   const offsetClause = 'OFFSET ' + ((options.offset) ? options.offset : 0);
-  const orderClause = 'ORDER BY ' + ((options.orderBy) ? options.orderBy : 'username ASC');
+  const orderClause = 'ORDER BY ' + ((options.orderBy) ? options.orderBy : 'u.username ASC');
 
 
   const sql = `SELECT *
-    FROM ${USER_TABLE}
+    FROM ${USER_TABLE} u ${joinClause}
     ${whereClause}
     ${orderClause}
     ${limitClause}

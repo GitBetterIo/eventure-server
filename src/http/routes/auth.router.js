@@ -2,15 +2,17 @@ const router = require('express').Router();
 
 
 module.exports = (config, application) => {
-  // const passport = application.authService.passport;
-  const userService = application.userService;
-
-  const passport = require('./passport')(userService);
+  const passport = require('./passport')(application);
+  const {authService} = application;
 
   router.post('/login',
     passport.authenticate('local'),
     function(req, res, next) {
-      res.json({user: req.user});
+
+      const token = authService.generateToken();
+      authService.registerToken(token, req.user)
+        .then(tokenData => res.json({token}))
+        .catch(next)
     }
   );
 

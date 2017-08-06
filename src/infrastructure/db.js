@@ -47,6 +47,7 @@ function handleError(err, e) {
 
   if (e.query) {
     // query string is available
+    console.error('(SQL)' + e.query);
     if (e.params) {
       // query parameters are available
     }

@@ -7,6 +7,7 @@ const expressStatusMonitor = require('express-status-monitor');
 const chalk = require('chalk');
 const session = require('express-session');
 const pgSession = require('connect-pg-simple');
+const passport = require('passport');
 const cors = require('cors');
 
 
@@ -35,8 +36,8 @@ module.exports = (config, infrastructure, application, domain) => {
     saveUninitialized: config.session.saveUninitialized,
     cookie: config.session.cookie,
   }));
-  app.use(authService.passport.initialize());
-  app.use(authService.passport.session());
+  app.use(passport.initialize());
+  app.use(passport.session());
 
   app.get('/info/ping', function(req, res, next) {
     res.json({pong: 1});
