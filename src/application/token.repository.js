@@ -10,7 +10,7 @@ module.exports = db => ({
 
 function find(db, query, options) {
   const whereClauses = [];
-  if (query.token) whereClause.push('token=${token}')
+  if (query.token) whereClauses.push('token=${token}')
   if (query.userId) whereClauses.push('userId=${userId}');
   const whereClause = (whereClauses.length) ? 'WHERE ' + whereClauses.join(' AND ') : '';
 
@@ -21,7 +21,6 @@ function find(db, query, options) {
   const sql = `SELECT *
     FROM ${TOKEN_TABLE}
     ${whereClause}
-    ${orderClause}
     ${limitClause}`;
 
   return db.query(sql, query);
@@ -34,7 +33,7 @@ function create(db, data, options) {
 
 function remove(db, token, options) {
   const sql = `DELETE FROM ${TOKEN_TABLE} WHERE token = $[token]`;
-  return db.query(sql, data);
+  return db.query(sql, {token});
 }
 
 

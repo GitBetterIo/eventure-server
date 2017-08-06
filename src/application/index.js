@@ -13,5 +13,6 @@ module.exports = (config, {db}) => {
 
     // Useful for testing
     userRepository,
+    tokenRepository,
   };
 }

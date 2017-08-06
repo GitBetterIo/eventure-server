@@ -17,8 +17,11 @@ module.exports = (config, application) => {
   );
 
   router.post('/logout', function(req, res, next) {
-    req.logout();
-    res.json({logout: 'ok'});
+    authService.removeToken(req.token)
+      .then(() => {
+        res.json({logout: 'ok'});
+      })
+      .catch(next);
   });
 
 

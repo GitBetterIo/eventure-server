@@ -16,7 +16,7 @@ function find(db, query, options) {
   if (query.id) whereClauses.push('u.id=${id}');
   if (query.username) whereClauses.push('u.username=${username}');
   if (query.password_reset_token) whereClauses.push('u.password_reset_token=${password_reset_token}');
-  if (query.token) whereClause.push('token.token=${token}')
+  if (query.token) whereClauses.push('token.token=${token}')
   const whereClause = (whereClauses.length) ? 'WHERE ' + whereClauses.join(' AND ') : '';
 
   const joinClause = (query.token) ? `LEFT JOIN ${TOKEN_TABLE} token on token.user_id = u.id` : '';

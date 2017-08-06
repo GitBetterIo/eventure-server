@@ -24,7 +24,7 @@ module.exports = (config, infrastructure, application, domain) => {
 
   app.use(cors());
   app.use(expressStatusMonitor());
-  app.use(logger('dev'));
+  // app.use(logger('dev'));
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(expressValidator());
