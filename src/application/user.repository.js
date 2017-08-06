@@ -60,9 +60,11 @@ function create(db, data, options) {
 
   const sql = `INSERT INTO ${USER_TABLE}
     (username, password_hash, email, first_name, last_name, created, modified) VALUES
-    ($[username], $[passwordHash], $[email], $[firstName], $[lastName], $[created], $[modified])`;
+    ($[username], $[passwordHash], $[email], $[firstName], $[lastName], $[created], $[modified])
+    RETURNING id`;
 
-  return db.query(sql, createData);
+  return db.one(sql, createData)
+    .then(ret => db.one(`SELECT * FROM ${USER_TABLE} WHERE id=$1`, [ret.id]) );
 }
 
 function update(db, data, options) {

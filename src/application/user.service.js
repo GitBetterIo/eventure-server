@@ -36,10 +36,16 @@ module.exports = userRepository => ({
   register,
   /**
    * Find a user by username
-   * @param  {[type]} username [description]
-   * @return {[type]}          [description]
+   * @param  {String} username The username to search
+   * @return {Object}          Object representing the user
    */
   findByUsername: username => userRepository.findByUsername(username),
+  /**
+  * Find a user by token
+  * @param  {String} token  The token to search
+  * @return {Object}          Object representing the user
+  */
+  findByToken: token => userRepository.findByToken(token),
   /**
    * Register a new User
    * @type {[type]}

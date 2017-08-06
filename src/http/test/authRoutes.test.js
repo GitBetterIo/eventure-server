@@ -8,14 +8,17 @@ chai.use(chaiHttp);
 
 
 describe.only('Authentication Routes', () => {
-  const testUser = 'tester';
-  const testPass = 'tester_pass';
+  const testUsername = 'tester';
+  const testPassword = 'tester_pass';
+  let testUser;
+
 
   before(done => {
-    const userData = application.userService.setPassword({ username: testUser }, testPass);
+    const userData = application.userService.setPassword({ username: testUsername }, testPassword);
 
     truncateAll()
       .then(() => application.userRepository.save(userData))
+      .then(user => testUser = user)
       .then(() => done())
       .catch(done);
   });
@@ -42,7 +45,7 @@ describe.only('Authentication Routes', () => {
     it("Successfully logs in and receives a token", done => {
       chai.request(server)
         .post('/api/v1/auth/login')
-        .send({username: testUser, password: testPass})
+        .send({username: testUsername, password: testPassword})
         .then(res => {
           assert.propertyVal(res, 'status', 200);
           assert.isString(res.body.token);
@@ -55,7 +58,7 @@ describe.only('Authentication Routes', () => {
       let token;
       chai.request(server)
         .post('/api/v1/auth/login')
-        .send({username: testUser, password: testPass})
+        .send({username: testUsername, password: testPassword})
         .then(res => {
           token = res.body.token;
           assert.isString(token);
@@ -81,14 +84,45 @@ describe.only('Authentication Routes', () => {
     it("rejects bad password", done => {
       chai.request(server)
         .post('/api/v1/auth/login')
-        .send({username: testUser, password: testPass + 'abc'})
+        .send({username: testUsername, password: testPassword + 'abc'})
         .then(res => {
           done(new Error('Should have return unauthorized'))
         })
         .catch((err) => {
           assert.propertyVal(err.response, 'status', 401);
           done()
-        });
+        })
+        .catch(done);
+    })
+
+    it("denies requests to restricted urls", done => {
+      chai.request(server)
+        .get('/api/v1/me')
+        .then(res => {
+          done(new Error('Should have returned unauthorized'))
+        })
+        .catch(err => {
+          assert.equal(err.response.status, 401)
+          done();
+        })
+        .catch(done);
+    })
+
+    it("grants access to authenticated requests", done => {
+      const token = 'dfad5a63-d1f4-48ab-a3db-c53695e41eaa';
+      const sql = `INSERT INTO user_token (token, user_id) VALUES ($1, $2)`;
+      infrastructure.db.query(sql, [token, testUser.id])
+        .then(() => {
+          return chai.request(server)
+            .get('/api/v1/me')
+            .set('Authorization', `Bearer ${token}`)
+            .then(res => {
+              assert.equal(res.status, 200);
+              done();
+            })
+            .catch(done)
+        })
+        .catch(done);
     })
   })
 
