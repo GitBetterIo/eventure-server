@@ -1,8 +1,6 @@
 
 
-module.exports = (config, {db}) => {
-  const userRepository = require('./user.repository')(db);
-  const tokenRepository = require('./token.repository')(db);
+module.exports = (infrastructure) => {
   const userService = require('./user.service')(userRepository);
   const authService = require('./auth.service')(tokenRepository);
 

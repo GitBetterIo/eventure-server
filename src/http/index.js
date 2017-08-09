@@ -29,15 +29,15 @@ module.exports = (config, infrastructure, application, domain) => {
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(expressValidator());
 
-  app.use(session({
-    store: new (pgSession(session))({conObject : config.db}),
-    secret: config.session.secret,
-    resave: config.session.resave,
-    saveUninitialized: config.session.saveUninitialized,
-    cookie: config.session.cookie,
-  }));
+  // app.use(session({
+  //   store: new (pgSession(session))({conObject : config.db}),
+  //   secret: config.session.secret,
+  //   resave: config.session.resave,
+  //   saveUninitialized: config.session.saveUninitialized,
+  //   cookie: config.session.cookie,
+  // }));
   app.use(passport.initialize());
-  app.use(passport.session());
+  // app.use(passport.session());
 
   app.get('/info/ping', function(req, res, next) {
     res.json({pong: 1});

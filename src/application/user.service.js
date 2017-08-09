@@ -39,13 +39,13 @@ module.exports = userRepository => ({
    * @param  {String} username The username to search
    * @return {Object}          Object representing the user
    */
-  findByUsername: username => userRepository.findByUsername(username),
+  findByUsername: username => userRepository.get({username}, {limit: 1}),
   /**
   * Find a user by token
   * @param  {String} token  The token to search
   * @return {Object}          Object representing the user
   */
-  findByToken: token => userRepository.findByToken(token),
+  findByToken: token => userRepository.get({token}, {limit: 1}),
   /**
    * Register a new User
    * @type {[type]}
