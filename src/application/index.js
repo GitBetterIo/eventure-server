@@ -1,16 +1,15 @@
 
 
-module.exports = (infrastructure) => {
-  const userService = require('./user.service')(userRepository);
-  const authService = require('./auth.service')(tokenRepository);
+module.exports = (domain, infrastructure) => {
+  const {userRepository, accessTokenService} = infrastructure;
+  const {User} = domain;
 
+
+  const userService = require('./User')({userRepository});
+  const authService = require('./Auth')({User, userRepository, accessTokenService});
 
   return {
     userService,
     authService,
-
-    // Useful for testing
-    userRepository,
-    tokenRepository,
   };
 }

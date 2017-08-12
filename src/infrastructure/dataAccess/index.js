@@ -1,6 +1,6 @@
 
 
 module.exports = db => ({
-  User: require('./User')(db),
-  AccessToken: require('./AccessToken')(db),
+  UserDb: require('./User')(db),
+  AccessTokenDb: require('./AccessToken')(db),
 })

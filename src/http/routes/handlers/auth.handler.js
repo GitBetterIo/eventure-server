@@ -1,24 +1,29 @@
 
 
 module.exports = ({config, application}) => {
-  const passport = require('./passport')(application);
   const {authService} = application;
+
+  const passport = require('./passport')({authService});
 
   return {
     authenticateLocal: passport.authenticate('local'),
     authenticateToken: passport.authenticate('bearer', {session: false}),
 
     login: function(req, res, next) {
-      const token = authService.generateToken();
-      authService.registerToken(token, req.user)
-        .then(tokenData => res.json({token}))
-        .catch(next)
+
+      const {SUCCESS, ERROR} = authService.loginUser.outputs;
+      authService.loginUser(req.user)
+        .on(SUCCESS, token => res.json({token}))
+        .on(ERROR, err => next(err))
+        .execute();
     },
 
     logout: function(req, res, next) {
-      authService.removeToken(req.token)
-        .then(() => res.json({logout: 'ok'}) )
-        .catch(next);
+      const {SUCCESS, ERROR} = authService.logoutUser.outputs;
+      authService.logoutUser(req.user, req.token)
+        .on(SUCCESS, () => res.json({logout: true}))
+        .on(ERROR, err => next(err))
+        .execute();
     },
 
   }

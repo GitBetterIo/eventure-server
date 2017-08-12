@@ -10,5 +10,5 @@ const ctx = {tokenTable};
 module.exports = db => ({
   find: (query, options) => find(db, ctx, query, options),
   insert: (data, options) => insert(db, ctx, data, options),
-  remove: (token, options) => insert(db, ctx, token, options),
+  remove: (token, options) => remove(db, ctx, token, options),
 })

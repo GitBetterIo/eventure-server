@@ -1,5 +1,5 @@
 
 
 module.exports = dataAccess => ({
-  userRepository: require('./User')(dataAccess),
+  userRepository: require('./user.repository')(dataAccess),
 })

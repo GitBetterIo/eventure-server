@@ -1,10 +1,11 @@
 
 
 module.exports = function find(db, ctx, query, options) {
+  options = options || {};
   const {tokenTable} = ctx;
   const whereClauses = [];
   if (query.token) whereClauses.push('token=${token}')
-  if (query.userId) whereClauses.push('userId=${userId}');
+  if (query.userId) whereClauses.push('user_id=${userId}');
   const whereClause = (whereClauses.length) ? 'WHERE ' + whereClauses.join(' AND ') : '';
 
   const limit = (options.limit) ? options.limit : 20;
@@ -18,6 +19,6 @@ module.exports = function find(db, ctx, query, options) {
     ${limitClause}`;
 
   return (limit === 1)
-    ? db.one(sql, query)
+    ? db.oneOrNone(sql, query)
     : db.query(sql, query);
 }

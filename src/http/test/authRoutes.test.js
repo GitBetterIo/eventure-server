@@ -14,10 +14,10 @@ describe.only('Authentication Routes', () => {
 
 
   before(done => {
-    const userData = application.userService.setPassword({ username: testUsername }, testPassword);
+    const userData = domain.User.setPassword({ username: testUsername }, testPassword);
 
     truncateAll()
-      .then(() => application.userRepository.save(userData))
+      .then(() => infrastructure.userRepository.save(userData))
       .then(user => testUser = user)
       .then(() => done())
       .catch(done);
@@ -48,7 +48,8 @@ describe.only('Authentication Routes', () => {
         .send({username: testUsername, password: testPassword})
         .then(res => {
           assert.propertyVal(res, 'status', 200);
-          assert.isString(res.body.token);
+          assert.isObject(res.body.token);
+          assert.isString(res.body.token.token);
           done();
         })
         .catch(done);
@@ -60,18 +61,20 @@ describe.only('Authentication Routes', () => {
         .post('/api/v1/auth/login')
         .send({username: testUsername, password: testPassword})
         .then(res => {
-          token = res.body.token;
-          assert.isString(token);
-          return application.tokenRepository.findToken(token);
+          token = res.body.token.token;
+          assert.isObject(res.body.token);
+          assert.isString(res.body.token.token);
+          return infrastructure.accessTokenService.findToken(token);
         })
         .then(tokenRow => {
           assert.isOk(tokenRow);
+          const token = tokenRow.token;
           return chai.request(server)
             .post('/api/v1/auth/logout')
             .set('Authorization', `Bearer ${token}`)
             .then(res => {
               assert.propertyVal(res, 'status', 200);
-              return application.tokenRepository.findToken(token);
+              return infrastructure.accessTokenService.findToken(token);
             })
         })
         .then(tokenRow => {
