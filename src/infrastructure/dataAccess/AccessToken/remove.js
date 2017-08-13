@@ -1,8 +1,8 @@
 
 
-module.exports = function remove(db, ctx, token, options) {
+module.exports = function remove(db, token, options) {
   token = token.token || token;
-  const {tokenTable} = ctx;
+  const {accessToken: tokenTable} = db.tables;
   const sql = `DELETE FROM ${tokenTable} WHERE token = $[token]`;
   return db.none(sql, {token});
 }

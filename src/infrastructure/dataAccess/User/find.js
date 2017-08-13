@@ -1,7 +1,7 @@
 
 
-module.exports = function find(db, ctx, query, options) {
-  const {userTable} = ctx;
+module.exports = function find(db, query, options) {
+  const {user: userTable} = db.tables;
 
   const whereClauses = [];
   if (query.id) whereClauses.push('u.id=${id}');

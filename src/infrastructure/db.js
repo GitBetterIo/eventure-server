@@ -16,6 +16,15 @@ module.exports = function(config) {
             table_schema = 'public'
             AND table_name NOT IN ('migrations')`;
         return obj.any(sql).then(res => res.map(tbl => tbl.tableName))
+      };
+
+      obj.tables = {
+        user: 'user_login',
+        accessToken: 'user_token',
+        organization: 'organization',
+        eventure: 'eventure',
+        listing: 'listing',
+        listingGroup: 'listing_group',
       }
     },
     promiseLib: Promise,

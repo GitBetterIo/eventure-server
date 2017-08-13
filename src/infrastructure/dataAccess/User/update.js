@@ -1,7 +1,7 @@
 
 
-module.exports = function update(db, ctx, data, options) {
-  const {userTable} = ctx;
+module.exports = function update(db, data, options) {
+  const {user: userTable} = db.tables;
 
   const updateDate = Object.assign({}, data, {modified: new Date()});
 

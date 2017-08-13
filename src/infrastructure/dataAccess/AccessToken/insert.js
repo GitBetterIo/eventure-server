@@ -1,7 +1,7 @@
 
 
-module.exports = function create(db, ctx, data, options) {
-  const {tokenTable} = ctx;
+module.exports = function create(db, data, options) {
+  const {accessToken: tokenTable} = db.tables;
   const sql = `INSERT INTO ${tokenTable} (token, user_id) VALUES ($[token], $[userId]) RETURNING token`;
 
   return db.one(sql, data)

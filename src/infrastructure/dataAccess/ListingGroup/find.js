@@ -1,24 +1,26 @@
 
 
 module.exports = function find(db, query, options) {
-  options = options || {};
-  const {accessToken: tokenTable} = db.tables;
+  const {listingGroup: listingGroupTable} = db.tables;
+
   const whereClauses = [];
-  if (query.token) whereClauses.push('token=${token}')
-  if (query.userId) whereClauses.push('user_id=${userId}');
+  if (query.id) whereClauses.push('org.id=${id}');
   const whereClause = (whereClauses.length) ? 'WHERE ' + whereClauses.join(' AND ') : '';
 
   const limit = (options.limit) ? options.limit : 20;
-  const limitClause = `LIMIT ${limit}`;
+  const limitClause = 'LIMIT ' + limit;
   const offsetClause = 'OFFSET ' + ((options.offset) ? options.offset : 0);
+  const orderClause = (options.orderBy) ? `ORDER BY ${options.orderBy}`;
 
 
   const sql = `SELECT *
-    FROM ${tokenTable}
+    FROM ${listingGroupTable} org
     ${whereClause}
-    ${limitClause}`;
+    ${orderClause}
+    ${limitClause}
+    ${offsetClause}`;
 
   return (limit === 1)
-    ? db.oneOrNone(sql, query)
+    ? db.one(sql, query)
     : db.query(sql, query);
 }

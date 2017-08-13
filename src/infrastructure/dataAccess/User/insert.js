@@ -1,7 +1,7 @@
 
 
-module.exports = function insert(db, ctx, data, options) {
-  const {userTable} = ctx;
+module.exports = function insert(db, data, options) {
+  const {user: userTable} = db.tables;
   const defaults = {
     username: null,
     passwordHash: null,

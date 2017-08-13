@@ -2,8 +2,8 @@
 
 
 
-module.exports = function remove(db, ctx, id, options) {
-  const {userTable} = ctx;
+module.exports = function remove(db, id, options) {
+  const {user: userTable} = db.tables;
 
   const sql = `UPDATE ${userTable}
     SET
