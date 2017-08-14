@@ -1,15 +1,14 @@
 
 
 module.exports = (domain, infrastructure) => {
-  const {userRepository, accessTokenService} = infrastructure;
-  const {User} = domain;
+  const {userRepository, accessTokenService,
+    organizationReadService, organizationRepository} = infrastructure;
+  const {User, Organization} = domain;
 
-
-  const userService = require('./User')({userRepository});
-  const authService = require('./Auth')({User, userRepository, accessTokenService});
 
   return {
-    userService,
-    authService,
+    userService: require('./User')({userRepository}),
+    authService: require('./Auth')({User, userRepository, accessTokenService}),
+    organizationService: require('./Organization')({Organization, organizationRepository, organizationReadService}),
   };
 }

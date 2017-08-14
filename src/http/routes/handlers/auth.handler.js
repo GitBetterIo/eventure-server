@@ -13,7 +13,7 @@ module.exports = ({config, application}) => {
 
       const {SUCCESS, ERROR} = authService.loginUser.outputs;
       authService.loginUser(req.user)
-        .on(SUCCESS, token => res.json({token}))
+        .on(SUCCESS, accessToken => res.json(accessToken))
         .on(ERROR, err => next(err))
         .execute();
     },

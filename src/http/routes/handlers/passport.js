@@ -70,13 +70,15 @@ module.exports = ({authService}) => {
 
       req.token = token;
 
+      console.log("TOK", typeof token, token)
+
       const {SUCCESS, FAILURE, ERROR} = authService.authenticateUserWithToken.outputs;
       const authenticate = authService.authenticateUserWithToken(token);
       authenticate
         .on(SUCCESS, user => done(null, user))
         .on(FAILURE, reason => done(null, false, {message: reason}))
         .on(ERROR, err => done(err))
-      authenticate.execute();
+        .execute();
 
       // userService.findByToken(token)
       //   .then(user => {

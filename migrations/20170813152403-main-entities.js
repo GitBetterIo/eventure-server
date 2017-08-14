@@ -18,6 +18,8 @@ exports.up = function(db) {
   db.createTable('organization', {
     id: {type: 'bigint', primaryKey: true, autoIncrement: true},
     name: {type: 'string', notNull: true},
+    created: {type: 'timestamp', defaultValue: new String("(now() at time zone 'utc')")},
+    modified: {type: 'timestamp'},
   })
 
   db.createTable('eventure', {
@@ -36,6 +38,8 @@ exports.up = function(db) {
       }
     },
     name: {type: 'string', notNull: true},
+    created: {type: 'timestamp', defaultValue: new String("(now() at time zone 'utc')")},
+    modified: {type: 'timestamp'},
   })
 
   db.createTable('listing', {
@@ -67,6 +71,8 @@ exports.up = function(db) {
         mapping: 'id'
       }
     },
+    created: {type: 'timestamp', defaultValue: new String("(now() at time zone 'utc')")},
+    modified: {type: 'timestamp'},
   })
 
   db.createTable('listing_group', {
@@ -111,15 +117,17 @@ exports.up = function(db) {
         mapping: 'id'
       }
     },
+    created: {type: 'timestamp', defaultValue: new String("(now() at time zone 'utc')")},
+    modified: {type: 'timestamp'},
   })
   return null;
 };
 
 exports.down = function(db) {
-  db.dropTable('organization');
-  db.dropTable('eventure');
-  db.dropTable('listing');
   db.dropTable('listing_group');
+  db.dropTable('listing');
+  db.dropTable('eventure');
+  db.dropTable('organization');
   return null;
 };
 

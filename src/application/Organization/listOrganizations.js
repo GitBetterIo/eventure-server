@@ -1,6 +1,6 @@
-const UseCase = require('./useCase');
+const UseCase = require('../useCase');
 
-module.exports = ({organizationReadService}) => UseCase('getAllOrganizations', {
+module.exports = ({organizationReadService}) => UseCase('listOrganizations', {
   outputs: ['SUCCESS', 'ERROR'],
   execute: function(options) {
     options = options || {};

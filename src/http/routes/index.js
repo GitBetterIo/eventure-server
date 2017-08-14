@@ -1,9 +1,10 @@
 const router = require('express').Router();
 
 
-module.exports = (config, application) => {
-  const auth = require('./handlers/auth.handler')({config, application});
-  const user = require('./handlers/user.handler')({config, application});
+module.exports = (application, infrastructure) => {
+  const auth = require('./handlers/auth.handler')({application, infrastructure});
+  const user = require('./handlers/user.handler')({application, infrastructure});
+  const org = require('./handlers/org.handler')({application, infrastructure});
 
   /**
    * Extract the Bearer token (if any) from the Authorization header
@@ -24,6 +25,8 @@ module.exports = (config, application) => {
 
 
   router.use('/me', user.me);
+
+  router.get('/organization', org.list);
 
   return router;
 }

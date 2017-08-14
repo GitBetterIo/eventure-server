@@ -17,7 +17,7 @@ module.exports = (config, infrastructure, application, domain) => {
   const {authService} = application;
   const {db} = infrastructure;
 
-  const router = require('./routes')(config, application);
+  const router = require('./routes')(application, infrastructure);
   // const apiRouter = require('./routes/api')(application, infrastructure, domain);
   // const authRouter = require('./routes/auth')(authService);
   const errorHandler = require('./routes/errorHandler')(application, infrastructure, domain);

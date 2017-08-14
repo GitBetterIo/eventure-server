@@ -7,7 +7,7 @@ const {assert} = chai;
 chai.use(chaiHttp);
 
 
-describe.only('Authentication Routes', () => {
+describe('Authentication Routes', () => {
   const testUsername = 'tester';
   const testPassword = 'tester_pass';
   let testUser;

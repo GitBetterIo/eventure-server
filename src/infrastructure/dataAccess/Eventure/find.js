@@ -10,7 +10,7 @@ module.exports = function find(db, query, options) {
   const limit = (options.limit) ? options.limit : 20;
   const limitClause = 'LIMIT ' + limit;
   const offsetClause = 'OFFSET ' + ((options.offset) ? options.offset : 0);
-  const orderClause = (options.orderBy) ? `ORDER BY ${options.orderBy}`;
+  const orderClause = (options.orderBy) ? `ORDER BY ${options.orderBy}` : '';
 
 
   const sql = `SELECT *
