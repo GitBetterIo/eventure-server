@@ -17,7 +17,7 @@ exports.setup = function(options, seedLink) {
 exports.up = function(db) {
   db.createTable('user_token', {
     token: {type: 'uuid', primaryKey: true},
-    user_id: {type: 'bigint', notNull: true},
+    user_id: {type: 'uuid', notNull: true},
   })
   return null;
 };

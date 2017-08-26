@@ -18,6 +18,7 @@ exports.up = function(db) {
   db.createTable('organization', {
     id: {type: 'bigint', primaryKey: true, autoIncrement: true},
     name: {type: 'string', notNull: true},
+    deleted: {type: 'boolean', defaultValue: 'FAlSE'},
     created: {type: 'timestamp', defaultValue: new String("(now() at time zone 'utc')")},
     modified: {type: 'timestamp'},
   })

@@ -19,7 +19,8 @@ module.exports = function(config) {
       };
 
       obj.tables = {
-        user: 'user_login',
+        userProfile: 'user_profile',
+        userLogin: 'user_login',
         accessToken: 'user_token',
         organization: 'organization',
         eventure: 'eventure',

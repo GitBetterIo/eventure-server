@@ -9,7 +9,6 @@ module.exports = function insert(db, data, options) {
 
   const createData = Object.assign({}, defaults, data);
 
-
   const sql = `INSERT INTO ${organizationTable}
     (name, created, modified) VALUES
     ($[name], $[created], $[modified])

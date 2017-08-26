@@ -27,6 +27,9 @@ module.exports = (application, infrastructure) => {
   router.use('/me', user.me);
 
   router.get('/organization', org.list);
-
+  router.post('/organization', org.create);
+  router.get('/organization/:orgId', org.get);
+  router.put('/organization/:orgId', org.update);
+  router.delete('/organization/:orgId', org.remove);
   return router;
 }

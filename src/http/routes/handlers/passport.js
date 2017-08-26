@@ -70,7 +70,6 @@ module.exports = ({authService}) => {
 
       req.token = token;
 
-      console.log("TOK", typeof token, token)
 
       const {SUCCESS, FAILURE, ERROR} = authService.authenticateUserWithToken.outputs;
       const authenticate = authService.authenticateUserWithToken(token);

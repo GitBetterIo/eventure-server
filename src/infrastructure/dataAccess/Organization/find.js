@@ -4,6 +4,7 @@ module.exports = function find(db, query, options) {
   const {organization: organizationTable} = db.tables;
 
   const whereClauses = [];
+  // if (!query.includeDeleted) whereClause()
   if (query.id) whereClauses.push('org.id=${id}');
   const whereClause = (whereClauses.length) ? 'WHERE ' + whereClauses.join(' AND ') : '';
 
@@ -11,7 +12,6 @@ module.exports = function find(db, query, options) {
   const limitClause = 'LIMIT ' + limit;
   const offsetClause = 'OFFSET ' + ((options.offset) ? options.offset : 0);
   const orderClause = (options.orderBy) ? `ORDER BY ${options.orderBy}` : '';
-
 
   const sql = `SELECT *
     FROM ${organizationTable} org

@@ -10,7 +10,8 @@ module.exports = function update(db, data, options) {
       name=$[name],
       modified=$[modified]
     WHERE
-      id=$[id]`;
+      id=$[id]
+    RETURNING id`;
 
-  return db.query(sql, data);
+  return db.one(sql, data);
 }

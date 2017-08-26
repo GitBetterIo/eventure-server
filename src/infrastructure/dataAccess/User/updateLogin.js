@@ -1,17 +1,18 @@
 
 
 module.exports = function update(db, data, options) {
-  const {user: userTable} = db.tables;
+  const {userLogin: loginTable} = db.tables;
 
   const updateDate = Object.assign({}, data, {modified: new Date()});
 
-  const sql = `UPDATE ${userTable}
+  const sql = `UPDATE ${loginTable}
     SET
       username=$[username],
       password_hash=$[passwordHash],
-      email=$[email],
-      first_name=$[firstName],
-      last_name=$[lastName],
+      password_reset_token=$[passwordResetToken],
+      registration_token=$[registrationToken],
+      registration_expire=$[registrationExpire],
+      last_login=$[lastLogin],
       modified=$[modified]
     WHERE
       id=$[id]`;
