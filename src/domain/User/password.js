@@ -1,11 +1,10 @@
-const bcrypt = require('bcrypt');
-
+const hashPassword = require('./hashPassword');
 
 
 module.exports = ({
   setPassword: (user, plaintextPassword) => {
-    const salt = bcrypt.genSaltSync(10);
-    const login = Object.assign({}, user.login, {passwordHash: bcrypt.hashSync(plaintextPassword, salt)});
+    const passwordHash = hashPassword(plaintextPassword);
+    const login = Object.assign({}, user.login, {passwordHash});
     return Object.assign({}, user, {login});
   },
 
