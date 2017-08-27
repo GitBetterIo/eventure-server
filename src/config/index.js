@@ -7,4 +7,5 @@ module.exports = {
 
   db: require('./db'),
   session: require('./session'),
+  email: require('./email'),
 }

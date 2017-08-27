@@ -8,7 +8,7 @@ module.exports = (user, profile) => {
   return Object.assign({}, user, {
     email: profile.email,
     firstName: profile.firstName,
-    lastName: profile.lastName
+    lastName: profile.lastName,
     _new: true
   })
 }

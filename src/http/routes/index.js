@@ -5,6 +5,7 @@ module.exports = (application, infrastructure) => {
   const auth = require('./handlers/auth.handler')({application, infrastructure});
   const user = require('./handlers/user.handler')({application, infrastructure});
   const org = require('./handlers/org.handler')({application, infrastructure});
+  const registration = require('./handlers/registration.handler')({application});
 
   /**
    * Extract the Bearer token (if any) from the Authorization header
@@ -23,8 +24,8 @@ module.exports = (application, infrastructure) => {
   router.use(auth.authenticateToken);
   router.use('/auth/logout', auth.logout);
 
-
   router.use('/me', user.me);
+  router.post('/registration/start', registration.startRegistration);
 
   router.get('/organization', org.list);
   router.post('/organization', org.create);

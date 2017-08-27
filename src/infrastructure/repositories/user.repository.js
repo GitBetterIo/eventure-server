@@ -33,10 +33,10 @@ const save = (UserDb, data, options) => {
   if (data.login) data.login.deleted = undefined;
 
   let loginOperation;
-  const profileOperation = (data.id) ? UserDb.profile.update : UserDb.profile.insert;
+  const profileOperation = (data._new) ? UserDb.profile.insert : UserDb.profile.update;
 
   if (!data.login) loginOperation = () => {}; // noop
-  else loginOperation =  (data.login.id) ? UserDb.login.update : UserDb.login.insert
+  else loginOperation =  (data.login._new) ? UserDb.login.insert : UserDb.login.update
 
   return Promise.all([
     profileOperation(data, options),
