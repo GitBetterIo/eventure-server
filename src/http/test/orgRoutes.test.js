@@ -7,7 +7,7 @@ const {assert} = chai;
 chai.use(chaiHttp);
 
 
-describe.only('Organization Routes', () => {
+describe('Organization Routes', () => {
   const testUsername = 'tester';
   const testPassword = 'tester_pass';
   const organizations = [

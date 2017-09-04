@@ -1,11 +1,12 @@
+const moment = require('moment');
 const UseCase = require('../useCase');
 const uuid = require('uuid/v4');
 
 
-module.exports = ({User, userRepository}) => UseCase('startRegistration', {
+module.exports = ({User, userRepository, emailService}) => UseCase('startRegistration', {
   outputs: ['SUCCESS', 'ERROR', 'EMAIL_ERROR'],
   execute: function({username, email, password}) {
-    const {SUCCESS, ERROR} = this.outputs;
+    const {SUCCESS, ERROR, EMAIL_ERROR} = this.outputs;
 
     const expireMinutes = 60 * 24;
     const id = uuid();
@@ -16,7 +17,7 @@ module.exports = ({User, userRepository}) => UseCase('startRegistration', {
     const user = User.createProfile({id}, {email});
     const userWithLogin = User.createLogin(user, {username, password, registrationToken, registrationExpire});
 
-    const emailData {
+    const emailData = {
       username,
       registrationToken,
       registrationExpiresAt,
@@ -25,8 +26,13 @@ module.exports = ({User, userRepository}) => UseCase('startRegistration', {
     return userRepository.save(user)
       .catch(err => this.emit(ERROR, err))
       .then(user => emailService.sendTemplate('startRegistration', email, emailData))
-      .catch(err => this.emit(EMAIL_ERROR, err))
+      .catch(err => {
+        console.log("purging", user.id);
+        return userRepository.purge(user.id)
+          .then(() => this.emit(EMAIL_ERROR, err) )
+      })
       .then(() => this.emit(SUCCESS, {email, registrationToken, registrationExpiresAt}))
+      .catch(err => this.emit(ERROR, err))
 
     // Create a profile & login
   }

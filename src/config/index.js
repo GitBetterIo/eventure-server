@@ -5,7 +5,7 @@ module.exports = {
   port: process.env.PORT || 3030,
   env: process.env.NODE_ENV,
 
-  db: require('./db'),
+  db: require('./db')(process.env.NODE_ENV),
   session: require('./session'),
   email: require('./email'),
 }

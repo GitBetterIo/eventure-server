@@ -21,11 +21,14 @@ module.exports = (application, infrastructure) => {
   })
 
   router.post('/auth/login', auth.authenticateLocal, auth.login);
+  router.post('/registration/start', registration.startRegistration);
+
+  
   router.use(auth.authenticateToken);
+
   router.use('/auth/logout', auth.logout);
 
   router.use('/me', user.me);
-  router.post('/registration/start', registration.startRegistration);
 
   router.get('/organization', org.list);
   router.post('/organization', org.create);

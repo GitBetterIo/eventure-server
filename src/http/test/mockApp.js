@@ -5,7 +5,7 @@ require('dotenv').config()
 const config = require('../../config');
 
 const domain = require('../../domain');
-const infrastructure = require('../../infrastructure')(config);
+const infrastructure = require('../../infrastructure')(config, domain);
 const application = require('../../application')(domain, infrastructure)
 
 function truncateAll() {

@@ -1,6 +1,8 @@
 
 
 module.exports = {
-  User: require('./User'),
-  Organization: require('./Organization'),
+  Entities: {
+    User: require('./User'),
+    Organization: require('./Organization'),
+  },
 }

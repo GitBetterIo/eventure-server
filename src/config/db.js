@@ -8,10 +8,20 @@ function dbName(env) {
   }
 }
 
-module.exports = {
-  database: dbName(process.env.NODE_ENV),
-  host: process.env.DB_HOST,
-  port: Number(process.env.DB_PORT),
-  username: process.env.DB_USER,
-  password: process.env.DB_PASS,
-}
+module.exports = env => ({
+  client: 'pg',
+  connection: {
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASS,
+    database: dbName(env),
+    port: Number(process.env.DB_PORT),
+  },
+  pool: {
+    min: 2,
+    max: 10
+  },
+  migrations: {
+    tableName: 'migrations'
+  }
+})

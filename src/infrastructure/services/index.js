@@ -1,11 +1,11 @@
 
 
-module.exports = ({config, dataAccess}) => {
-  const {AccessTokenDb} = dataAccess;
+module.exports = ({config, Database}) => {
+  const {AccessTokenDb} = Database;
 
   return {
     accessTokenService: require('./accessToken.service')({AccessTokenDb}),
-    organizationReadService: require('./organizationRead.service')({OrganizationDb: dataAccess.OrganizationDb}),
+    organizationReadService: require('./organizationRead.service')({OrganizationDb: Database.OrganizationDb}),
     emailService: require('./email.service')({config: config.email})
   }
 }

@@ -1,6 +1,6 @@
 
 
-module.exports = dataAccess => ({
-  userRepository: require('./user.repository')(dataAccess),
-  organizationRepository: require('./organization.repository')(dataAccess),
+module.exports = ({Database, Entities}) => ({
+  userRepository: require('./user.repository')(Database),
+  organizationRepository: require('./organization.repository')(Database),
 })

@@ -12,7 +12,7 @@ module.exports = (user, loginData) => {
   const login = {
     id: user.id,
     username: loginData.username,
-    passwordHash: hashPassword(loginData.passwordHash),
+    passwordHash: hashPassword(loginData.password),
     passwordResetToken: loginData.passwordResetToken,
     registrationToken: loginData.registrationToken,
     registrationExpire: loginData.registrationExpire,

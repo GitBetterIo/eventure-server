@@ -4,11 +4,13 @@ module.exports = ({UserDb}) => ({
   list: (query, options) => find(UserDb, query, options || {}),
   save: (data, options) => save(UserDb, data, options),
   remove: (id, options) => remove(UserDb, id, options),
+  purge: (id, options) => purge(UserDb, id, options),
 
   // not really repository pattern, but not a terrible place to put these
   findByUsername: username => this.find({username}, {limit:1}),
   findByToken: token => this.find({token}, {limit: 1}),
 })
+
 
 const hydrateUser = raw => Object.keys(raw).reduce( (user, key) => {
     const parts = key.split('$');
@@ -49,6 +51,14 @@ const remove = (UserDb, id, options) => {
   // TODO: !!!This should be in a transaction
   return Promise.all([
     UserDb.profile.remove(id),
-    UserDb.login.remove(id)
+    UserDb.login.remove(id),
   ])
+}
+
+const purge = (UserDb, id, options) => {
+  return Promise.all([
+    UserDb.profile.purge(id),
+    UserDb.login.purge(id),
+  ])
+
 }

@@ -1,14 +1,14 @@
 // server/infrastructure/index.js
 
-module.exports = config => {
-  const {db, pgp} = require('./db')(config);
-  const dataAccess = require('./dataAccess')(db);
-  const repositories = require('./repositories')(dataAccess)
-  const services = require('./services')({config, dataAccess});
+module.exports = (config, {Entities}) => {
+  const db = require('./db')(config);
+  const Database = require('./dataAccess')(db);
+  const Repositories = require('./repositories')({Database, Entities})
+  const services = require('./services')({config, Database});
+
 
   return Object.assign(
-    { db, pgp, dataAccess },
-    repositories,
+    { db, Database },
     services
   );
 };
