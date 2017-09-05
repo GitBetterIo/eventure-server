@@ -1,66 +1,69 @@
 
 
 module.exports = ({application}) => ({
-  list: (req, res, next) => {
+  list: async (req, res, next) => {
+    const query = {};
     const options = {};
-    const {SUCCESS, ERROR} = application.organizationService.listOrganizations.outputs;
-    application.organizationService.listOrganizations(options)
-      .on(SUCCESS, orgs => res.json(orgs))
-      .on(ERROR, err => next(err))
-      .execute();
+
+    try {
+      const orgs = await application.organizationService.listOrganizations(query, options);
+      return res.json(orgs);
+    } catch(err) {
+      return next(err);
+    }
   },
 
-  create: (req, res, next) => {
+  create: async (req, res, next) => {
     const orgData = req.body;
-    const {SUCCESS, ERROR} = application.organizationService.createOrganization.outputs;
-    application.organizationService.createOrganization(orgData)
-      .on(SUCCESS, org => res.status(201).json(org))
-      .on(ERROR, err => next(err))
-      .execute();
 
+    try {
+      const org = await application.organizationService.createOrganization(orgData);
+      return res.status(201).json(org);
+    } catch(err) {
+      return next(err);
+    }
   },
-  get: (req, res, next) => {
+  get: async (req, res, next) => {
     const {orgId} = req.params;
-    const {SUCCESS, NOTFOUND, ERROR} = application.organizationService.createOrganization.outputs;
-    application.organizationService.getOrganization(orgId)
-      .on(SUCCESS, org => res.json(org))
-      .on(ERROR, err => next(err))
-      .on(NOTFOUND, orgId => {
-        const err = new Error(`Could not find organization ${orgId}`);
+
+    try {
+      const org = await application.organizationService.getOrganization(orgId);
+      if (!org) {
+        const err = new Error(`Organization not found`);
         err.status = 404;
-        next(err);
-      })
-      .execute();
+        return next(err);
+      }
+      return res.json(org);
+    } catch(err) {
+      return next(err);
+    }
   },
 
   update: (req, res, next) => {
     const {orgId} = req.params;
     const orgData = req.body;
-    const {SUCCESS, NOTFOUND, ERROR} = application.organizationService.updateOrganization.outputs;
 
-    application.organizationService.updateOrganization(orgId, orgData)
-      .on(SUCCESS, org => res.json(org))
-      .on(ERROR, err => next(err))
-      .on(NOTFOUND, orgId => {
-        const err = new Error(`Could not find organization ${orgId}`);
+    try {
+      const org = await application.organizationService.updateOrganization(orgId, orgData);
+      if (!org) {
+        const err = new Error(`Organization not found`);
         err.status = 404;
-        next(err);
-      })
-      .execute();
+        return next(err);
+      }
+      return res.json(org);
+    } catch(err) {
+      return next(err);
+    }
   },
 
   remove: (req, res, next) => {
     const {orgId} = req.params;
-    const {SUCCESS, NOTFOUND, ERROR} = application.organizationService.removeOrganization.outputs;
 
-    application.organizationService.removeOrganization(orgId)
-      .on(SUCCESS, org => res.json({deleted: orgId}))
-      .on(ERROR, err => next(err))
-      .on(NOTFOUND, orgId => {
-        const err = new Error(`Could not find organization ${orgId}`);
-        err.status = 404;
-        next(err);
-      })
-      .execute();
+    try {
+      await application.organizationService.removeOrganization(orgId);
+      return res.json({deleted: orgId})
+    } catch(err) {
+      return next(err);
+    }
   },
 })
