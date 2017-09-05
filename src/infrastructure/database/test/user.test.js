@@ -13,7 +13,7 @@ function truncateAll() {
   return Database.getTableNames().map(name => Database.db.raw(`TRUNCATE TABLE ${name} CASCADE`))
 }
 
-describe.only('Database user profile', () => {
+describe('Database user profile and login', () => {
   before(done => {
     truncateAll().then(() => done()).catch(done);
   })
@@ -85,4 +85,6 @@ describe.only('Database user profile', () => {
         .catch(done)
     })
   })
+
 })
+

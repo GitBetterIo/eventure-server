@@ -1,19 +1,7 @@
-const UseCase = require('../useCase');
 
+module.exports = ({authService, User, userRepository}) => async (user) => {
+  const accessToken = await authService.createAccessToken(user.id);
+  const updateUser = await userRepository.save(User.login(user));
+  return accessToken;
+}
 
-module.exports = ({User, userRepository, accessTokenService}) => UseCase('logInUser', {
-  outputs: ['SUCCESS', 'ERROR'],
-  execute: function(user) {
-    const {SUCCESS, ERROR} = this.outputs;
-    const token = accessTokenService.generateToken();
-
-    const loggedInUser = User.login(user);
-
-    Promise.all([
-        userRepository.save(loggedInUser),
-        accessTokenService.saveToken(token, loggedInUser.id),
-      ])
-      .then(([user, accessToken]) => this.emit(SUCCESS, accessToken))
-      .catch(err => this.emit(ERROR, err))
-  }
-})

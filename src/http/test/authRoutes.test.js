@@ -1,23 +1,39 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
+const uuid = require('uuid/v4');
 const {config, infrastructure, application, domain, truncateAll} = require('./mockApp');
 const server = require('../../http')(config, infrastructure, application, domain);
 const {assert} = chai;
+const User = domain.Entities.User;
+
 
 chai.use(chaiHttp);
 
 
-describe('Authentication Routes', () => {
+describe.only('Authentication Routes', () => {
+  const testUserId = uuid();
+  const testUserProfile = {
+    id: uuid(),
+    firstName: 'test',
+    lastName: 'userman',
+  }
   const testUsername = 'tester';
   const testPassword = 'tester_pass';
+  const testEmail = 'tester@test.com';
+  const testUserLogin = {
+    username: testUsername,
+    password: testPassword,
+    email: testEmail,
+  }
   let testUser;
 
 
   before(done => {
-    const userData = domain.User.setPassword({ username: testUsername }, testPassword);
+    const user = User.create(testUserProfile);
+    const userWithLogin = User.createLogin(user, testUserLogin)
 
     truncateAll()
-      .then(() => infrastructure.userRepository.save(userData))
+      .then(() => infrastructure.Repositories.userRepository.save(userWithLogin))
       .then(user => testUser = user)
       .then(() => done())
       .catch(done);
@@ -48,8 +64,8 @@ describe('Authentication Routes', () => {
         .send({username: testUsername, password: testPassword})
         .then(res => {
           assert.propertyVal(res, 'status', 200);
-          assert.isObject(res.body.token);
-          assert.isString(res.body.token.token);
+          assert.isObject(res.body);
+          assert.isString(res.body.token);
           done();
         })
         .catch(done);
@@ -62,9 +78,9 @@ describe('Authentication Routes', () => {
         .send({username: testUsername, password: testPassword})
         .then(res => {
           token = res.body.token.token;
-          assert.isObject(res.body.token);
-          assert.isString(res.body.token.token);
-          return infrastructure.accessTokenService.findToken(token);
+          assert.isObject(res.body);
+          assert.isString(res.body.token);
+          return infrastructure.Database.accessToken.findOne({token}, {limit:1});
         })
         .then(tokenRow => {
           assert.isOk(tokenRow);
@@ -74,7 +90,7 @@ describe('Authentication Routes', () => {
             .set('Authorization', `Bearer ${token}`)
             .then(res => {
               assert.propertyVal(res, 'status', 200);
-              return infrastructure.accessTokenService.findToken(token);
+              return infrastructure.Database.accessToken.findOne({token}, {limit:1});
             })
         })
         .then(tokenRow => {
@@ -113,8 +129,11 @@ describe('Authentication Routes', () => {
 
     it("grants access to authenticated requests", done => {
       const token = 'dfad5a63-d1f4-48ab-a3db-c53695e41eaa';
-      const sql = `INSERT INTO user_token (token, user_id) VALUES ($1, $2)`;
-      infrastructure.db.query(sql, [token, testUser.id])
+      const tokenData = {
+        token,
+        userId: testUser.id
+      }
+      infrastructure.Database.accessToken.save(tokenData)
         .then(() => {
           return chai.request(server)
             .get('/api/v1/me')

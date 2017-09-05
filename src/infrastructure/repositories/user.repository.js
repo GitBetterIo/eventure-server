@@ -1,64 +1,45 @@
 
-module.exports = ({UserDb}) => ({
-  find: (query, options) => find(UserDb, query, {limit: 1}),
-  list: (query, options) => find(UserDb, query, options || {}),
-  save: (data, options) => save(UserDb, data, options),
-  remove: (id, options) => remove(UserDb, id, options),
-  purge: (id, options) => purge(UserDb, id, options),
-
-  // not really repository pattern, but not a terrible place to put these
-  findByUsername: username => this.find({username}, {limit:1}),
-  findByToken: token => this.find({token}, {limit: 1}),
+module.exports = (Database, User) => ({
+  get: (id, options) => get(Database, User, id),
+  save: (data, options) => save(Database, User, data, options),
+  remove: (id, options) => remove(Database, User, id, options),
 })
 
 
-const hydrateUser = raw => Object.keys(raw).reduce( (user, key) => {
-    const parts = key.split('$');
-    if (parts[0]==='login') user.login[parts[1]] = raw[key];
-    else user[parts[1] || parts[0]] = raw[key];
-    return user;
-  }, {login:{}});
 
-const find = (UserDb, query, options) => {
-  return UserDb.find(query, options)
-    .then(raw => Array.isArray(raw)
-      ? raw.map(hydrateUser)
-      : hydrateUser(raw)
-    );
+const get = (Database, User, id) => {
+  return Promise.all([
+    Database.userProfile.find({id}, {limit: 1}),
+    Database.userLogin.find({id}, {limit: 1}),
+  ])
+    .then(([profile, login]) => {
+      const user = User.create(profile);
+      const userWithLogin = User.createLogin(user, login);
+      return userWithLogin;
+    })
 }
 
-const save = (UserDb, data, options) => {
-  // TODO: !!!This should be in a transaction
+const save = (Database, User, userData, options) => {
+  const profile = User.getProfile(userData);
+  const login = User.getLogin(userData);
+  const id = User.getId(userData);
 
-  // You can't delete user data using this method;
-  data.deleted = undefined;
-  if (data.login) data.login.deleted = undefined;
 
-  let loginOperation;
-  const profileOperation = (data._new) ? UserDb.profile.insert : UserDb.profile.update;
-
-  if (!data.login) loginOperation = () => {}; // noop
-  else loginOperation =  (data.login._new) ? UserDb.login.insert : UserDb.login.update
-
-  return Promise.all([
-    profileOperation(data, options),
-    loginOperation(data.login, options),
-  ])
-    .then(([profile, login]) => find(UserDb, {id: profile.id}, {limit: 1}) )
+  return Database.userProfile.save(profile)
+    .then(() => Database.userLogin.save(login));
 }
 
-const remove = (UserDb, id, options) => {
-  // TODO: !!!This should be in a transaction
-  return Promise.all([
-    UserDb.profile.remove(id),
-    UserDb.login.remove(id),
-  ])
-}
 
-const purge = (UserDb, id, options) => {
-  return Promise.all([
-    UserDb.profile.purge(id),
-    UserDb.login.purge(id),
-  ])
 
+const remove = (Database, User, userId, options={}) => {
+
+  return (options.purge)
+    ? Promise.all([
+      Database.userProfile.purge({id: userId}),
+      Database.userLogin.purge({id: userId}),
+    ])
+    : Promise.all([
+      Database.userProfile.remove({id: userId}),
+      Database.userLogin.remove({id: userId}),
+    ])
 }

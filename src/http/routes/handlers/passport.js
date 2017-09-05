@@ -8,19 +8,21 @@ module.exports = ({authService}) => {
     done(null, user.id);
   });
 
-  passport.deserializeUser((id, done) => {
-    const {SUCCESS, ERROR} = authService.deserializeUser.outputs;
-    authService.deserializeUser(id)
-      .on(SUCCESS, user => done(null, user))
-      .on(ERROR, err => done(err, null))
-      .execute();
+  passport.deserializeUser(async (id, done) => {
+
+    try {
+      const user = await authService.deserializeUser(id);
+      return done(null, user);
+    } catch(err) {
+      done(err);
+    }
   });
 
   /**
   * Sign in using Email and Password.
   */
   passport.use(new LocalStrategy(
-    (username, password, done) => {
+    async (username, password, done) => {
 
       /**
        * OPTION 1
@@ -36,13 +38,13 @@ module.exports = ({authService}) => {
       /**
        * OPTION 2
        */
-      const {SUCCESS, FAILURE, ERROR} = authService.authenticateUserWithPassword.outputs;
-      const authenticate = authService.authenticateUserWithPassword(username, password);
-      authenticate
-        .on(SUCCESS, user => done(null, user))
-        .on(FAILURE, reason => done(null, false, {message: reason}))
-        .on(ERROR, err => done(err))
-      authenticate.execute();
+
+      try {
+        const userLogin = await authService.authenticateUserWithPassword(username, password);
+        done(null, userLogin);
+      } catch (err) {
+        done(err);
+      }
 
 
 
@@ -66,25 +68,18 @@ module.exports = ({authService}) => {
 
   passport.use(new BearerStrategy(
     {passReqToCallback: true},
-    function(req, token, done) {
+    async function(req, token, done) {
 
       req.token = token;
 
 
-      const {SUCCESS, FAILURE, ERROR} = authService.authenticateUserWithToken.outputs;
-      const authenticate = authService.authenticateUserWithToken(token);
-      authenticate
-        .on(SUCCESS, user => done(null, user))
-        .on(FAILURE, reason => done(null, false, {message: reason}))
-        .on(ERROR, err => done(err))
-        .execute();
+      try {
+        const userLogin = await authService.authenticateUserWithToken(token);
+        done(null, userLogin);
+      } catch(err) {
+        done(err);
+      }
 
-      // userService.findByToken(token)
-      //   .then(user => {
-      //     if (!user) { return done(null, false, { msg: `token not found.` }); }
-      //     return done(null, user, { scope: 'all' });
-      //   })
-      //   .catch(done);
     }
   ));
 

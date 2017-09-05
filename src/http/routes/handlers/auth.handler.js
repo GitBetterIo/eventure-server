@@ -9,21 +9,23 @@ module.exports = ({config, application}) => {
     authenticateLocal: passport.authenticate('local'),
     authenticateToken: passport.authenticate('bearer', {session: false}),
 
-    login: function(req, res, next) {
-
-      const {SUCCESS, ERROR} = authService.loginUser.outputs;
-      authService.loginUser(req.user)
-        .on(SUCCESS, accessToken => res.json(accessToken))
-        .on(ERROR, err => next(err))
-        .execute();
+    login: async function(req, res, next) {
+      try {
+        const accessToken = await authService.loginUser(req.user);
+        return res.json(accessToken);
+      } catch(err) {
+        return next(err);
+      }
     },
 
-    logout: function(req, res, next) {
-      const {SUCCESS, ERROR} = authService.logoutUser.outputs;
-      authService.logoutUser(req.user, req.token)
-        .on(SUCCESS, () => res.json({logout: true}))
-        .on(ERROR, err => next(err))
-        .execute();
+    logout: async function(req, res, next) {
+
+      try {
+        await authService.logoutUser(req.user, req.token);
+        return res.json({logout: true});
+      } catch(err) {
+        return next(err);
+      }
     },
 
   }

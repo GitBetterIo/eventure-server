@@ -7,8 +7,8 @@ module.exports = (domain, infrastructure) => {
 
 
   return {
+    authService: require('./Auth')(domain, infrastructure),
     userService: require('./User')({User, userRepository, emailService}),
-    authService: require('./Auth')({User, userRepository, accessTokenService}),
     organizationService: require('./Organization')({Organization, organizationRepository, organizationReadService}),
   };
 }

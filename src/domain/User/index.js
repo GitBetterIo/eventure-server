@@ -1,11 +1,12 @@
 
 const passwordFunctions = require('./password');
+const getterFunctions = require('./getters');
 
 module.exports = Object.assign({
-  createProfile: require('./createProfile'),
+  create: require('./create'),
   createLogin: require('./createLogin'),
   login: require('./login'),
-  tokens: require('./tokenCollection'),
 },
-  passwordFunctions
+  passwordFunctions,
+  getterFunctions,
 )

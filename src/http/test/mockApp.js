@@ -9,10 +9,7 @@ const infrastructure = require('../../infrastructure')(config, domain);
 const application = require('../../application')(domain, infrastructure)
 
 function truncateAll() {
-  return infrastructure.db.getTableNames().each(name => {
-    const sql = `TRUNCATE TABLE ${name} CASCADE`;
-    return infrastructure.db.query(sql);
-  })
+  return infrastructure.Database.getTableNames().map(name => infrastructure.Database.db.raw(`TRUNCATE TABLE ${name} CASCADE`))
 }
 
 module.exports = {config, infrastructure, application, domain, truncateAll};

@@ -1,4 +1,15 @@
-const hashPassword = require('./hashPassword');
+const bcrypt = require('bcrypt');
+
+
+/**
+ * Convert a plaintext string to a hash
+ * Generates a new salt
+ * @param {String} plaintextPassword 
+ */
+const hashPassword = plaintextPassword => {
+  const salt = bcrypt.genSaltSync(10);
+  return bcrypt.hashSync(plaintextPassword, salt)
+}
 
 
 module.exports = ({
@@ -9,7 +20,7 @@ module.exports = ({
   },
 
   matchPassword: (user, plaintextPassword) => {
-    return bcrypt.compareSync(plaintextPassword, user.login.passwordHash)
-  }
+    return user.login && bcrypt.compareSync(plaintextPassword, user.login.passwordHash)
+  },
 
 })

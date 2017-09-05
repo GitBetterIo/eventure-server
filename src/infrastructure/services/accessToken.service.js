@@ -7,3 +7,4 @@ module.exports = ({AccessTokenDb}) => ({
   removeToken: (token) => AccessTokenDb.remove({token}),
   generateToken: () => uuid(),
 })
+
