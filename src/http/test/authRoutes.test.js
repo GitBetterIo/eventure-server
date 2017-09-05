@@ -10,7 +10,7 @@ const User = domain.Entities.User;
 chai.use(chaiHttp);
 
 
-describe.only('Authentication Routes', () => {
+describe('Authentication Routes', () => {
   const testUserId = uuid();
   const testUserProfile = {
     id: uuid(),

@@ -1,12 +1,10 @@
 
 
 
-module.exports = ({authService, errors}) => (token) => {
-  return authService.findUserByToken(token)
-    .then(user => {
-      if (!user) throw new errors.AuthenticationFail();
-      return user;
-    })
+module.exports = ({authService, errors}) => async (token) => {
+  const user = await authService.findUserByToken(token);
+  if (!user) throw new errors.AuthenticationFail();
+  return user;
 }
 
 
