@@ -1,6 +1,6 @@
 
 
-module.exports = ({OrganizationDb}) => ({
-  find: (query, options) => OrganizationDb.find(query, options),
-  findById: (id) => OrganizationDb.find({id}, {limit: 1}),
+module.exports = (Database) => ({
+  find: (query, options) => Database.organization.find(query, options),
+  findById: (id) => Database.organization.findOne({id}),
 })
