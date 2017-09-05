@@ -9,8 +9,8 @@ module.exports = (Database, User) => ({
 
 const get = (Database, User, id) => {
   return Promise.all([
-    Database.userProfile.find({id}, {limit: 1}),
-    Database.userLogin.find({id}, {limit: 1}),
+    Database.userProfile.findOne({id}),
+    Database.userLogin.findOne({id}),
   ])
     .then(([profile, login]) => {
       const user = User.create(profile);

@@ -9,6 +9,7 @@ module.exports = config => {
     userProfile: require('./userProfile')(db),
     userLogin: require('./userLogin')(db),
     accessToken: require('./accessToken')(db),
+    organization: require('./organization')(db),
   }
 }
 
