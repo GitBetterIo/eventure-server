@@ -1,13 +1,21 @@
 
-module.exports = ({userReadService, userEntity: User, errors}) => async (username, password) => {
+module.exports = ({userReadService, userRoot: User, errors}) => async (username, password) => {
   try {
-    const user = await userReadService.findUserByUsername(username);
+    const userData = await userReadService.findUserByUsername(username);
 
-    if (!user || !User.matchPassword(user, password)) throw new errors.AuthenticationError();
+    if (!userData)  throw new errors.AuthenticationError()
+
+    const user = User(userData)
+
+    if (!user.matchPassword(password)) throw new errors.AuthenticationError();
     
     return user;
   } catch(err) {
-    throw new errors.AuthenticationError(err.message);
+    const authErr = new errors.AuthenticationError(err.message);
+    // if (process.env.NODE_ENV !== 'production') {
+    //   console.log(err.stack)
+    // }
+    throw authErr
   }
 }
 

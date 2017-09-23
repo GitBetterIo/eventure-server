@@ -14,27 +14,21 @@ const indexedServiceFormat = (name, descriptor) => {
 
 module.exports = ({config}) => {
   const container = awilix.createContainer()
-  const types = ['service', 'dataStore', 'entity', 'repository', 'read.service'].join('|');
+  const infrastructureTypes = ['service', 'dataStore', 'repository', 'read.service'].join('|');
+  const domainTypes = ['entity', 'root'].join('|')
 
   container.registerValue({
     config,
     errors: require('./infrastructure/errors'),
+    helpers: require('./helpers'),
   });
 
   container.registerFunction({passport: require('./http/passport')})
   container.loadModules([ 
-    `infrastructure/**/*.+(${types}).js`,
+    `infrastructure/**/*.+(${infrastructureTypes}).js`,
+    `domain/**/*.+(${domainTypes}).js`,
   ], {
     formatName: 'camelCase',
-    cwd: __dirname,
-    registrationOptions: {
-      lifetime: awilix.Lifetime.SCOPED
-    }
-  })
-  container.loadModules([
-    `domain/entities/**/index.js`,
-  ], {
-    formatName: entityFormat,
     cwd: __dirname,
     registrationOptions: {
       lifetime: awilix.Lifetime.SCOPED

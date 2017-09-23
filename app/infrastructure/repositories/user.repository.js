@@ -1,26 +1,28 @@
 
-module.exports = ({ userLoginDataStore, userProfileDataStore, userEntity: User}) => ({
+module.exports = ({ userLoginDataStore, userProfileDataStore, userRoot: User}) => ({
 
   get: async (id) => {
     const profile = await userProfileDataStore.findOne({id})
     const login = await userLoginDataStore.findOne({id})
 
-    const user = User.create(profile);
-    const userWithLogin = User.createLogin(user, login);
+    const user = User(profile).addLogin(login)
 
-    return userWithLogin;
+    return user;
   },
   
-  save: async (userData, options) => {
-    const profile = User.getProfile(userData);
-    const login = User.getLogin(userData);
-  
+  save: async (user, options) => {
+    const profile = user.getProfile();
+    const login = user.getLogin();
+
     const savedProfile = await userProfileDataStore.save(profile)
-    const savedLogin = (login)
-      ? await userLoginDataStore.save(login)
-      : undefined
-    
-    return User.createLogin(savedProfile, savedLogin);
+    const savedUser = User(savedProfile)
+
+    if (login) {
+      const savedLogin = await userLoginDataStore.save(login)
+      savedUser.addLogin(login);
+    }
+
+    return savedUser
   },
   
   remove: async (userId, options={}) => {

@@ -5,38 +5,48 @@ module.exports = (container) => {
   const auth = require('./handlers/auth.handler');
   const user = require('./handlers/user.handler');
   const org = require('./handlers/org.handler');
+  const eventure = require('./handlers/eventure.handler');
   const registration = require('./handlers/registration.handler');
 
 
 
   /**
-   * Extract the Bearer token (if any) from the Authorization header
+   * Determine the organization id
    */
   router.use(function(req, res, next) {
-    if (req.headers && req.headers.authorization) {
-      const parts = req.headers.authorization.split(' ');
-      if (parts.length === 2 && parts[0] === 'Bearer') {
-        req.token = parts[1];
-      }
+    // DEVELOPMENT ONLY
+    const organizationId = req.headers.organization || req.body.organization || 'd3b86b88-e3e3-4783-b41b-11f43c23ab27';
+
+    if (!organizationId) {
+      const err = new Error('Request was not made to a specific organization');
+      err.status = 400;
+      return next(err);
     }
+
+    req.organization = {id: organizationId}
     next();
   })
 
-  router.post('/auth/login', auth.authenticateLocal, auth.login);
+
+  router.post('/login', auth.authenticateLocal, auth.login);
   // router.post('/registration/start', registration.startRegistration);
 
   
   router.use(auth.authenticateToken);
-
   router.use((req, res, next) => {
     req.container.registerValue({
-      currentUser: req.user
+      currentUser: req.user,
+      currentOrganization: req.organization
     })
     next();
   })
 
-  router.use('/auth/logout', auth.logout);
+  /**
+   * Access Control
+   */
+  // TODO
 
+  router.use('/logout', auth.logout);
   router.use('/me', user.me);
 
   router.get('/organization', org.list);
@@ -44,5 +54,10 @@ module.exports = (container) => {
   router.get('/organization/:orgId', org.get);
   router.put('/organization/:orgId', org.update);
   router.delete('/organization/:orgId', org.remove);
-  return router;
+
+  router.get('/eventure', eventure.list);
+  router.post('/eventure', eventure.create);
+  router.get('/eventure/:eventureId', eventure.get);
+
+  return router;s
 }

@@ -5,10 +5,11 @@ const {assert} = chai
 
 
 describe("User Repository", () => {
-  let container, userRepository;
+  let container, userRepository, User;
   before(() => {
     container = require('../../../container')({config})
     userRepository = container.cradle.userRepository
+    User = container.cradle.userRoot
   })
 
   describe("saving", () => {
@@ -16,7 +17,7 @@ describe("User Repository", () => {
 
     it("saves a user without a login", async () => {
       const id = uuid()
-      const newUser = {id}
+      const newUser = User({id})
       savedUser = await userRepository.save(newUser)
     })
 

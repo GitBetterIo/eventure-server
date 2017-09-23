@@ -1,4 +1,4 @@
-const omit = require('lodash/omit');
+const pick = require('lodash/pick');
 
 
 module.exports = ({dbService}) => ({
@@ -11,26 +11,29 @@ module.exports = ({dbService}) => ({
 
 
 /**
- * Generic db query for user_login
+ * Generic db query
  * 
  * @param {object} db 
  * @param {object} query 
  * @param {object} options 
  */
-function find(db, query, options={}) {
+async function find(db, query, options={}) {
   const snakeQuery = db.camelToSnake(query);
   const {limit=50, offset=0, join} = options;
 
   const selectQuery = db
     .select('*')
-    .from('user_login as login')
+    .from('eventure')
     .limit(limit)
     .offset(offset)
 
+  if (!query.organizationId) {
+    throw new Error(`Missing required 'organizationId' query parameter`);
+  }
 
+  selectQuery.where('organization_id', query.organizationId);
   if (query.id) selectQuery.where('id', query.id);
-  if (query.username) selectQuery.where('username', query.username);
-  if (query.email) selectQuery.where('email', query.email);
+  if (query.name) selectQuery.where('name', query.name);
   if (!query.deleted) selectQuery.where('deleted', 'false');
 
   return selectQuery
@@ -49,10 +52,11 @@ async function findOne(db, query, options) {
  * @param {object} data 
  * @param {object} options 
  */
-async function save(db, data, options) {
-  const dbData = db.camelToSnake(omit(data, 'deleted'));
+function save(db, data, options) {
+  const saveFields = ['id', 'organizationId', 'name', 'slug', 'description', 'startDate', 'endDate', 'settings', 'active']
+  const dbData = db.camelToSnake(pick(data, saveFields));
 
-  const insert = db('user_login').insert(dbData);
+  const insert = db('eventure').insert(dbData);
   const update = db.update(dbData)
   const upsert = db.raw('? ON CONFLICT (id) DO ? RETURNING *', [insert, update]);
   return upsert
@@ -63,10 +67,10 @@ async function save(db, data, options) {
 
 
 function remove(db, query, options) {
-  return db('user_login').where(query).update({deleted: true});
+  return db('eventure').where(query).update({deleted: true});
 }
 
 
 function purge(db, query, options) {
-  return db('user_login').where(query).del();
+  return db('eventure').where(query).del();
 }

@@ -7,7 +7,7 @@ const {assert} = chai;
 chai.use(chaiHttp);
 
 
-describe('Organization Routes', () => {
+describe.skip('Organization Routes', () => {
   const testUsername = 'tester';
   const testPassword = 'tester_pass';
   const organizations = [

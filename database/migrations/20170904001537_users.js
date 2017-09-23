@@ -12,7 +12,7 @@ exports.up = function(knex, Promise) {
     }),
 
     knex.schema.createTable('user_login', t => {
-      t.uuid('id').primary().references('user_profile.id');
+      t.uuid('id').primary().references('user_profile.id').onDelete('CASCADE');
       t.string('username').notNullable();
       t.string('email').notNullable();
       t.string('password_hash', 500).notNullable();

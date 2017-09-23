@@ -23,7 +23,6 @@ module.exports = ({authService}) => {
   */
   passport.use(new LocalStrategy(
     async (username, password, done) => {
-
       /**
        * OPTION 1
        */

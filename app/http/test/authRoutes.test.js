@@ -6,14 +6,14 @@ const {container, truncateAll} = require('./mockApp');
 const server = require('../../http')(container);
 const {assert} = chai;
 const {
-  userEntity: User,
+  userRoot: User,
   userRepository,
   accessTokenDataStore,
 } = container.cradle;
 
 chai.use(chaiHttp);
 
-describe.only('Authentication Routes', () => {
+describe('Authentication Routes', () => {
   const testUserId = uuid();
   const testUserProfile = {
     id: uuid(),
@@ -32,12 +32,11 @@ describe.only('Authentication Routes', () => {
 
 
   before(done => {
-    const user = User.create(testUserProfile);
-    const userWithLogin = User.createLogin(user, testUserLogin)
+    const user = User(testUserProfile).addLogin(testUserLogin);
 
     truncateAll()
-      .then(() => userRepository.save(userWithLogin))
-      .then(user => testUser = user)
+      .then(() => userRepository.save(user) )
+      .then(user => testUser = user )
       .then(() => done())
       .catch(done);
   });
@@ -63,7 +62,7 @@ describe.only('Authentication Routes', () => {
 
     it("Successfully logs in and receives a token", done => {
       chai.request(server)
-        .post('/api/v1/auth/login')
+        .post('/api/v1/login')
         .send({username: testUsername, password: testPassword})
         .then(res => {
           assert.propertyVal(res, 'status', 200);
@@ -77,7 +76,7 @@ describe.only('Authentication Routes', () => {
     it("Successfully logs out", done => {
       let token;
       chai.request(server)
-        .post('/api/v1/auth/login')
+        .post('/api/v1/login')
         .send({username: testUsername, password: testPassword})
         .then(res => {
           token = res.body.token.token;
@@ -89,7 +88,7 @@ describe.only('Authentication Routes', () => {
           assert.isOk(tokenRow);
           const token = tokenRow.token;
           return chai.request(server)
-            .post('/api/v1/auth/logout')
+            .post('/api/v1/logout')
             .set('Authorization', `Bearer ${token}`)
             .then(res => {
               assert.propertyVal(res, 'status', 200);
@@ -105,7 +104,7 @@ describe.only('Authentication Routes', () => {
 
     it("rejects bad password", done => {
       chai.request(server)
-        .post('/api/v1/auth/login')
+        .post('/api/v1/login')
         .send({username: testUsername, password: testPassword + 'abc'})
         .then(res => {
           done(new Error('Should have return unauthorized'))

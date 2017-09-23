@@ -1,1 +1,0 @@
-module.exports = (org, name) => Object.assign({}, org, {name});

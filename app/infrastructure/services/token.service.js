@@ -2,7 +2,7 @@ const uuid = require('uuid/v4');
 
 const generateToken = () => uuid();
 
-module.exports = ({accessTokenDataStore, userEntity:User}) => ({
+module.exports = ({accessTokenDataStore, userRoot:User}) => ({
   createAccessToken(userId) {
     const token = generateToken();
     const tokenData = { token, userId };

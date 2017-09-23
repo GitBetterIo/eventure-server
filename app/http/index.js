@@ -12,7 +12,7 @@ const cors = require('cors');
 
 
 module.exports = (container) => {
-  const {dbService} = container.cradle;
+  const {dbService, config} = container.cradle;
   const app = express();
 
   app.use((req, res, next) => {
@@ -51,18 +51,9 @@ module.exports = (container) => {
 
 
   app.start = function() {
-    return dbService.connect()
-      .then(obj => {
-          obj.done(); // success, release the connection;
-          console.log(`${chalk.green('✓')} Db Connection successful`);
-          app.listen(config.port, () => {
-            console.log(`${chalk.green('✓')} App ${config.appName} is listening on port ${config.port} in mode ${config.env}`);
-          });
-      })
-      .catch(error => {
-          console.log('ERROR:', error);
-      });
-
+    app.listen(config.port, () => {
+      console.log(`${chalk.green('✓')} App ${config.appName} is listening on port ${config.port} in mode ${config.env}`);
+    });
   }
 
   return app

@@ -1,7 +1,6 @@
 // Update with your config settings.
 require('dotenv').config();
-const dbConfig = require('./src/config/db');
-
+const dbConfig = require('./config/db');
 
 
 module.exports = {

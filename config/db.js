@@ -24,9 +24,9 @@ module.exports = env => ({
   },
   migrations: {
     tableName: 'migrations',
-    direcory: path.resolve(__dirname, '..', 'database', 'migrations'),
+    directory: 'database/migrations',
   },
   seeds: {
-    direcory: path.resolve(__dirname, '..', 'database', 'seeds'),
+    directory: 'database/seeds',
   }
 })
