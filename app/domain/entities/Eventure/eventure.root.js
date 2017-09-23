@@ -1,3 +1,4 @@
+const CreateCollection = require('../collection');
 
 module.exports = ({helpers, ListingEntity}) => {
 
@@ -27,9 +28,12 @@ module.exports = ({helpers, ListingEntity}) => {
     // Create an array of listings
     const listings = (rawListings || []).map(ListingEntity)
     const slug = helpers.slugify(data.name)
-
     const eventure = Object.create(eventurePrototype)
-    return Object.assign(eventure, {listings, slug})
+
+    return Object.assign(eventure, {
+      slug,
+      listings: CreateCollection(listings), 
+    })
   }
 
   return CreateEventure

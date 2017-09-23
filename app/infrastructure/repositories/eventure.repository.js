@@ -12,8 +12,12 @@ module.exports = ({eventureDataStore, listingDataStore, eventureRoot: Eventure})
 
   async save(eventure, options) {
 
+    const modifiedListings = eventure.listings.getModified()
+    const removedListings = eventure.listings.getRemoved()
+
     return Promise.all([
-      ...eventure.listings.map(listing => listingDataStore.save(listing)),
+      ...modifiedListings.map(listing => listingDataStore.save(listing)),
+      ...removedListings.map(listing => listingDataStore.remove({id: listing.id})),
       eventureDataStore.save(eventure),
     ])
 
