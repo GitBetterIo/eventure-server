@@ -1,11 +1,11 @@
 
 
-module.exports = ({userReadService, userRepository, tokenService, userRoot, errors}) => {
+module.exports = ({personReadService, personRepository, tokenService, personRoot, errors}) => {
   return {
-    authenticateUserWithPassword: require('./authenticateUserWithPassword')({userReadService, userRoot, errors}),
-    authenticateUserWithToken: require('./authenticateUserWithToken')({userReadService, errors}),
-    deserializeUser: require('./deserializeUser')({userRepository}),
-    loginUser: require('./loginUser')({tokenService, userReadService, userRoot, userRepository}),
+    authenticateUserWithPassword: require('./authenticateUserWithPassword')({personReadService, personRoot, errors}),
+    authenticateUserWithToken: require('./authenticateUserWithToken')({personReadService, errors}),
+    deserializeUser: require('./deserializeUser')({personRepository}),
+    loginUser: require('./loginUser')({tokenService, personReadService, personRoot, personRepository}),
     logoutUser: require('./logoutUser')({tokenService}),
   }
 }

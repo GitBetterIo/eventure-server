@@ -6,37 +6,36 @@ const {container, truncateAll} = require('./mockApp');
 const server = require('../../http')(container);
 const {assert} = chai;
 const {
-  userRoot: User,
-  userRepository,
+  personRoot: Person,
+  personRepository,
   accessTokenDataStore,
 } = container.cradle;
 
 chai.use(chaiHttp);
 
 describe('Authentication Routes', () => {
-  const testUserId = uuid();
-  const testUserProfile = {
-    id: uuid(),
-    firstName: 'test',
-    lastName: 'userman',
-  }
+  const testPersonId = uuid();
   const testUsername = 'tester';
   const testPassword = 'tester_pass';
   const testEmail = 'tester@test.com';
-  const testUserLogin = {
-    username: testUsername,
-    password: testPassword,
-    email: testEmail,
+  const testPersonProfile = {
+    id: uuid(),
+    firstName: 'test',
+    lastName: 'userman',
+    email: testEmail
   }
-  let testUser;
+  const testPersonLogin = {
+    password: testPassword,
+  }
+  let testPerson;
 
 
   before(done => {
-    const user = User(testUserProfile).addLogin(testUserLogin);
+    const person = Person(testPersonProfile).addLogin(testPersonLogin);
 
     truncateAll()
-      .then(() => userRepository.save(user) )
-      .then(user => testUser = user )
+      .then(() => personRepository.save(person) )
+      .then(person => testPerson = person )
       .then(() => done())
       .catch(done);
   });
@@ -63,7 +62,7 @@ describe('Authentication Routes', () => {
     it("Successfully logs in and receives a token", done => {
       chai.request(server)
         .post('/api/v1/login')
-        .send({username: testUsername, password: testPassword})
+        .send({email: testEmail, password: testPassword})
         .then(res => {
           assert.propertyVal(res, 'status', 200);
           assert.isObject(res.body);
@@ -77,7 +76,7 @@ describe('Authentication Routes', () => {
       let token;
       chai.request(server)
         .post('/api/v1/login')
-        .send({username: testUsername, password: testPassword})
+        .send({email: testEmail, password: testPassword})
         .then(res => {
           token = res.body.token.token;
           assert.isObject(res.body);
@@ -105,7 +104,7 @@ describe('Authentication Routes', () => {
     it("rejects bad password", done => {
       chai.request(server)
         .post('/api/v1/login')
-        .send({username: testUsername, password: testPassword + 'abc'})
+        .send({email: testEmail, password: testPassword + 'abc'})
         .then(res => {
           done(new Error('Should have return unauthorized'))
         })
@@ -133,7 +132,7 @@ describe('Authentication Routes', () => {
       const token = 'dfad5a63-d1f4-48ab-a3db-c53695e41eaa';
       const tokenData = {
         token,
-        userId: testUser.id
+        personId: testPerson.id
       }
       accessTokenDataStore.save(tokenData)
         .then(() => {

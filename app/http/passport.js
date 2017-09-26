@@ -21,47 +21,18 @@ module.exports = ({authService}) => {
   /**
   * Sign in using Email and Password.
   */
-  passport.use(new LocalStrategy(
+  passport.use(new LocalStrategy({
+      usernameField: 'email',
+      passwordField: 'password'
+    },
     async (username, password, done) => {
-      /**
-       * OPTION 1
-       */
-      // authService.authenticateUserWithPassword(username, password)
-      //   .then(user => {
-      //     if (!user) return done(null, false, {message: 'Invalid username or password.'})
-      //     return done(null, user);
-      //   })
-      //   .catch(err => done(err))
-
-
-      /**
-       * OPTION 2
-       */
-
       try {
-        const userLogin = await authService.authenticateUserWithPassword(username, password);
-        done(null, userLogin);
+        const person = await authService.authenticateUserWithPassword(username, password);
+        done(null, person);
       } catch (err) {
         done(err);
       }
 
-
-
-      /**
-       * OPTION 3
-       */
-      // userService.findByUsername(username)
-      //   .then(user => {
-      //     if (!user) {
-      //       return done(null, false, { msg: `User ${username} not found.` });
-      //     }
-      //     if (!userService.passwordMatches(password, user)) {
-      //       return done(null, false, { msg: 'Invalid username or password.' });
-      //     }
-      //
-      //     return done(null, user);
-      //   })
-      //   .catch(done)
     }
   ));
 
@@ -71,10 +42,9 @@ module.exports = ({authService}) => {
 
       req.token = token;
 
-
       try {
-        const userLogin = await authService.authenticateUserWithToken(token);
-        done(null, userLogin);
+        const person = await authService.authenticateUserWithToken(token);
+        done(null, person);
       } catch(err) {
         done(err);
       }

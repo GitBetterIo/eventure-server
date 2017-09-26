@@ -1,6 +1,6 @@
 
 exports.up = function(knex, Promise) {
-  return knex.schema.createTable('eventureListing', t => {
+  return knex.schema.createTable('eventure_listing', t => {
     t.uuid('id').primary()
     t.uuid('organization_id').notNullable().references('organization.id').onDelete('CASCADE')
     t.uuid('eventure_id').notNullable().references('eventure.id').onDelete('CASCADE')
@@ -18,5 +18,5 @@ exports.up = function(knex, Promise) {
 };
 
 exports.down = function(knex, Promise) {
-  return knex.schema.dropTable('eventureListing')
+  return knex.schema.dropTable('eventure_listing')
 };

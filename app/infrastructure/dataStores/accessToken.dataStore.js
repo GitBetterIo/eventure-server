@@ -20,7 +20,7 @@ function find(db, query, options={}) {
     .offset(offset)
 
 
-  if (query.userId) selectQuery.where('user_id', query.userId);
+  if (query.personId) selectQuery.where('person_id', query.personId);
   if (query.token) selectQuery.where('token', query.token);
 
   return selectQuery

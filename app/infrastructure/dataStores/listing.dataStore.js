@@ -23,12 +23,12 @@ async function find(db, query, options={}) {
 
   const selectQuery = db
     .select('*')
-    .from('eventureListing')
+    .from('eventure_listing')
     .limit(limit)
     .offset(offset)
 
   if (!query.organizationId) {
-    throw new Error(`Missing required 'organizationId' query parameter`);
+    throw new Error(`Find Listing: Missing required 'organizationId' query parameter`);
   }
 
   selectQuery.where('organization_id', query.organizationId);
@@ -53,16 +53,20 @@ async function findOne(db, query, options) {
  * @param {object} data 
  * @param {object} options 
  */
-function save(db, data, options) {
+async function save(db, data, options) {
+  const required = ['id', 'organizationId', 'eventureId', 'name', 'slug', 'startDate', 'endDate']
+  const missing = required.filter(fld => !data.hasOwnProperty(fld))
+  if (missing.length) throw new Error(`Missing required field(s) in save listing: [${missing.join(', ')}]`)
+
   const saveFields = ['id', 'organizationId', 'eventureId', 'name', 'slug', 'description', 'startDate', 'endDate', 'settings']
   const dbData = db.camelToSnake(pick(data, saveFields));
 
-  const insert = db('eventureListing').insert(dbData);
+  const insert = db('eventure_listing').insert(dbData);
   const update = db.update(dbData)
   const upsert = db.raw('? ON CONFLICT (id) DO ? RETURNING *', [insert, update]);
   return upsert
     .then(res => res.rows[0])
-    .then(row => db.snakeToCamel(row));
+    .then(row => db.snakeToCamel(row))
 
 }
 

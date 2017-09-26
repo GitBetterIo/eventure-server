@@ -31,7 +31,6 @@ module.exports = (container) => {
   router.post('/login', auth.authenticateLocal, auth.login);
   // router.post('/registration/start', registration.startRegistration);
 
-  
   router.use(auth.authenticateToken);
   router.use((req, res, next) => {
     req.container.registerValue({
@@ -58,6 +57,8 @@ module.exports = (container) => {
   router.get('/eventure', eventure.list);
   router.post('/eventure', eventure.create);
   router.get('/eventure/:eventureId', eventure.get);
+
+  router.post('/eventure/:eventureId/listing', eventure.addListing);
 
   return router;s
 }

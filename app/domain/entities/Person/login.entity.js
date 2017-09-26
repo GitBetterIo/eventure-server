@@ -46,7 +46,7 @@ module.exports = ({helpers}) => {
   const loginPrototype = Object.assign({}, Login)
   
   const CreateLogin = (loginData) => {
-    const missing = helpers.getMissingProps(['id', 'username'], loginData)
+    const missing = helpers.getMissingProps(['id'], loginData)
     if (missing.length) throw new Error(`Missing required properties for User Login: [${missing.join(',')}]`)
 
     const login = Object.assign(

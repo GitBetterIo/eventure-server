@@ -2,10 +2,10 @@ const uuid = require('uuid/v4');
 
 const generateToken = () => uuid();
 
-module.exports = ({accessTokenDataStore, userRoot:User}) => ({
-  createAccessToken(userId) {
+module.exports = ({accessTokenDataStore}) => ({
+  createAccessToken(personId) {
     const token = generateToken();
-    const tokenData = { token, userId };
+    const tokenData = { token, personId };
 
     return accessTokenDataStore.save(tokenData);
   },

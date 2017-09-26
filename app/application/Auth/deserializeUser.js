@@ -1,6 +1,5 @@
 
-module.exports = ({userRepository}) => serializedUser => {
-  const id = serializedUser;
-  return userRepository.get(id)
+module.exports = ({personRepository}) => id => {
+  return personRepository.get(id)
 }
 

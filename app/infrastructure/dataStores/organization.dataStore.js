@@ -1,7 +1,7 @@
 const omit = require('lodash/omit');
 
 
-module.exports = dbService => ({
+module.exports = ({dbService}) => ({
   find: (query, options) => find(dbService, query, options),
   findOne: (query, options) => findOne(dbService, query, options),
   save: (data, options) => save(dbService, data, options),

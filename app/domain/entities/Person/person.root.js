@@ -3,10 +3,10 @@ const uuid = require('uuid/v4')
 
 module.exports = ({helpers, loginEntity}) => {
 
-  const User = {
+  const Person = {
 
     /**
-     * Add a login to the user
+     * Add a login to the person
      * @param {Object} loginData Plain object containing login data
      */
     addLogin(loginData) {
@@ -51,26 +51,26 @@ module.exports = ({helpers, loginEntity}) => {
     },
   }
 
-  const userPrototype = Object.assign({}, User)
+  const personPrototype = Object.assign({}, Person)
 
-  const CreateUser = (userData) => {
-    const missing = helpers.getMissingProps(['id'], userData)
-    if (missing.length) throw new Error(`Missing required properties for User: [${missing.join(',')}]`)
+  const CreatePerson = (personData) => {
+    const missing = helpers.getMissingProps(['id'], personData)
+    if (missing.length) throw new Error(`Missing required properties for erson: [${missing.join(',')}]`)
 
-    const user = Object.assign(
-      Object.create(userPrototype),
-      userData
+    const person = Object.assign(
+      Object.create(personPrototype),
+      personData
     )
 
-    user.id = user.id || uuid()
+    person.id = person.id || uuid()
 
-    if (userData.login) {
-      user.addLogin(userData.login);
+    if (personData.login) {
+      person.addLogin(personData.login);
     }
 
-    return user
+    return person
   }
 
-  return CreateUser
+  return CreatePerson
   
 }

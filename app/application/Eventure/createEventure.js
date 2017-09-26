@@ -1,7 +1,7 @@
 const uuid = require('uuid/v4')
 
-module.exports = ({eventureRepository, eventureRoot}) => async data => {
+module.exports = ({eventureRepository, eventureRoot}) => async (organizationId, eventureData) => {
   const id = uuid();
-  const newEventure = eventureRoot.create(Object.assign({}, data, {id}));
-  return await eventureRepository.save(newEventure);
+  const newEventure = eventureRoot(Object.assign({}, eventureData, {id, organizationId}));
+  return await eventureRepository.save(organizationId, newEventure);
 }

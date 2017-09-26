@@ -1,7 +1,7 @@
 
-module.exports = ({tokenService, userRepository}) => async (user) => {
+module.exports = ({tokenService, personRepository}) => async (user) => {
   const accessToken = await tokenService.createAccessToken(user.id);
-  const updateUser = await userRepository.save(user.loginUser());
+  const updateUser = await personRepository.save(user.loginUser());
   
   return accessToken;
 }

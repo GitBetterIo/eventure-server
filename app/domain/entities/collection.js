@@ -37,6 +37,7 @@ const Collection = {
   getUpdated() { return this._col.filter(i => i._status === UPDATED) },
   getModified() { return this._col.filter(i => i._status === NEW || i._status === UPDATED) },
   getRemoved() { return this._col.filter(i => i._status === REMOVED) },
+  toJSON() { return this._col; }
 }
 
 const arrayMethods = [

@@ -11,7 +11,7 @@ module.exports = ({dbService}) => ({
 
 
 /**
- * Generic db query for user_login
+ * Generic db query for person_login
  * 
  * @param {object} db 
  * @param {object} query 
@@ -23,14 +23,12 @@ function find(db, query, options={}) {
 
   const selectQuery = db
     .select('*')
-    .from('user_login as login')
+    .from('person_login')
     .limit(limit)
     .offset(offset)
 
 
   if (query.id) selectQuery.where('id', query.id);
-  if (query.username) selectQuery.where('username', query.username);
-  if (query.email) selectQuery.where('email', query.email);
   if (!query.deleted) selectQuery.where('deleted', 'false');
 
   return selectQuery
@@ -52,7 +50,7 @@ async function findOne(db, query, options) {
 async function save(db, data, options) {
   const dbData = db.camelToSnake(omit(data, 'deleted'));
 
-  const insert = db('user_login').insert(dbData);
+  const insert = db('person_login').insert(dbData);
   const update = db.update(dbData)
   const upsert = db.raw('? ON CONFLICT (id) DO ? RETURNING *', [insert, update]);
   return upsert
@@ -63,10 +61,10 @@ async function save(db, data, options) {
 
 
 function remove(db, query, options) {
-  return db('user_login').where(query).update({deleted: true});
+  return db('person_login').where(query).update({deleted: true});
 }
 
 
 function purge(db, query, options) {
-  return db('user_login').where(query).del();
+  return db('person_login').where(query).del();
 }

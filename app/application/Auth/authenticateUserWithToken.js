@@ -1,12 +1,12 @@
 
 
 
-module.exports = ({userReadService, errors}) => async (token) => {
-  const user = await userReadService.findUserByToken(token);
+module.exports = ({personReadService, errors}) => async (token) => {
+  const person = await personReadService.findByToken(token);
   
-  if (!user) throw new errors.AuthenticationError();
+  if (!person) throw new errors.AuthenticationError();
 
-  return user;
+  return person;
 }
 
 

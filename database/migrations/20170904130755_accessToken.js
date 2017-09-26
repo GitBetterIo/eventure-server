@@ -2,7 +2,7 @@
 exports.up = function(knex, Promise) {
   return knex.schema.createTable('access_token', t => {
     t.uuid('token').primary();
-    t.uuid('user_id').references('user_login.id');
+    t.uuid('person_id').references('person_login.id');
   })
 };
 

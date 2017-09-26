@@ -2,34 +2,34 @@ const {assert} = require('chai')
 const uuid = require('uuid/v4')
 const config = require('../../../../../config');
 
-describe("User Root Aggregate", () => {
-  let container, User;
+describe("Person Root Aggregate", () => {
+  let container, Person;
   before(() => {
     container = require('../../../../container')({config})
-    User = container.cradle.userRoot;
+    Person = container.cradle.personRoot;
   })
 
   describe("creating", () => {
-    it("Creates a user", () => {
-      const userData = {
+    it("Creates a person", () => {
+      const personData = {
         id: uuid(),
       }
-      const user = User(userData)
-      assert.isOk(user)
+      const person = Person(personData)
+      assert.isOk(person)
     })
   })
 
   describe("getters", () => {
     it('gets the profiles as a plain object', () => {
       const id = uuid();
-      const userData = {
+      const personData = {
         id,
         firstName: 'a',
         lastName: 'b',
       }
-      const user = User(userData)
+      const person = Person(personData)
 
-      const profile = user.getProfile()
+      const profile = person.getProfile()
       Object.keys(profile).forEach(key => assert.notEqual(typeof profile[key], 'function') )
 
     })

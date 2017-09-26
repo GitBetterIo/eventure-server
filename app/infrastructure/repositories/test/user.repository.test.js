@@ -4,26 +4,26 @@ const config = require('../../../../config')
 const {assert} = chai
 
 
-describe("User Repository", () => {
-  let container, userRepository, User;
+describe("Person Repository", () => {
+  let container, personRepository, Person;
   before(() => {
     container = require('../../../container')({config})
-    userRepository = container.cradle.userRepository
-    User = container.cradle.userRoot
+    personRepository = container.cradle.personRepository
+    Person = container.cradle.personRoot
   })
 
   describe("saving", () => {
-    let savedUser;
+    let savedPerson;
 
-    it("saves a user without a login", async () => {
+    it("saves a person without a login", async () => {
       const id = uuid()
-      const newUser = User({id})
-      savedUser = await userRepository.save(newUser)
+      const newPerson = Person({id})
+      savedPerson = await personRepository.save(newPerson)
     })
 
-    it("returns the saved user", () => {
-      assert.isOk(savedUser);
-      assert.property(savedUser, 'createdAt')
+    it("returns the saved person", () => {
+      assert.isOk(savedPerson);
+      assert.property(savedPerson, 'createdAt')
     })
   })
 })

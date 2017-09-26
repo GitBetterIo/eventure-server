@@ -1,7 +1,7 @@
 const {assert} = require('chai')
 const CreateCollection = require('../collection')
 
-describe.only("Entity Collection", () => {
+describe("Entity Collection", () => {
   describe('creating a collection', () => {
     it('Creates an empty collection', () => {
       const col = CreateCollection();

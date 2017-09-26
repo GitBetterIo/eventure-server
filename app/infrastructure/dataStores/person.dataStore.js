@@ -3,7 +3,7 @@ const omit = require('lodash/omit');
 
 module.exports = ({dbService: db}) => {
   /**
-   * Generic db query for user_profile
+   * Generic db query for person table
    * 
    * @param {object} db 
    * @param {object} query 
@@ -15,13 +15,13 @@ module.exports = ({dbService: db}) => {
   
     const selectQuery = db
       .select('*')
-      .from('user_profile as profile')
+      .from('person')
       .limit(limit)
       .offset(offset)
   
   
-    if (query.id) selectQuery.where('profile.id', query.id);
-    if (!query.deleted) selectQuery.where('profile.deleted', 'false');
+    if (query.id) selectQuery.where('id', query.id);
+    if (!query.deleted) selectQuery.where('deleted', 'false');
   
     return selectQuery
       .map(db.snakeToCamel)
@@ -43,7 +43,7 @@ module.exports = ({dbService: db}) => {
   async function save(data, options) {
     const dbData = db.camelToSnake(omit(data, 'deleted'));
   
-    const insert = db('user_profile').insert(dbData);
+    const insert = db('person').insert(dbData);
     const update = db.update(dbData)
     const upserted = await db.raw('? ON CONFLICT (id) DO ? RETURNING *', [insert, update]);
 
@@ -52,12 +52,12 @@ module.exports = ({dbService: db}) => {
   
   
   async function remove(query, options) {
-    return db('user_profile').where(query).update({deleted: true});
+    return db('person').where(query).update({deleted: true});
   }
   
   
   async function purge(query, options) {
-    return db('user_profile').where(query).del();
+    return db('person').where(query).del();
   }
 
   return {find, findOne, save, remove, purge}

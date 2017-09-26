@@ -1,36 +1,57 @@
+const isString = require('lodash/isString')
+const isObject = require('lodash/isObject')
 
-module.exports = ({eventureDataStore, listingDataStore, eventureRoot: Eventure}) => ({
-  async get(id) {
-    const data = await eventureDataStore.findOne({id})
-    const listings = await listingDataStore.find({eventureId: id})
-  
+module.exports = ({eventureDataStore, listingDataStore, eventureRoot: Eventure}) => {
+
+  async function get(organizationId, id) {
+    
+    if (!id || !organizationId) throw new Error(`eventureRepository requires both the eventureId and the organizationId in order to fetch an entry`)
+
+    const data = await eventureDataStore.findOne({organizationId, id})
+    const listings = await listingDataStore.find({eventureId: id, organizationId})
+
     if (!data) throw new Error(`Unknown Eventure '${id}'`);
   
-    const ev = Eventure.create(data, listings);
+    const ev = Eventure(data, listings);
     return ev;
-  },
+  }
 
-  async save(eventure, options) {
+  /**
+   * Saves an eventure root aggregate (and all child entities) to the database
+   * 
+   * @param {UUID} organizationId The organization ID to which the eventure belongs
+   * @param {Object} eventure The eventure domain entity to save
+   * @param {Object} options Save options
+   */
+  async function save(organizationId, eventure, options) {
+
+    if (process.env.NODE_ENV !== 'production') {
+      if (!isString(organizationId)) throw new Error(`Expecting organizationId to be a string.  Received ${typeof organizationId}`)
+      if (!isObject(eventure)) throw new Error('Expecting eventure to be an object')
+    }
+
+    if (organizationId !== eventure.organizationId) throw new Error(`Attempting to save an eventure to another organization`)
 
     const modifiedListings = eventure.listings.getModified()
     const removedListings = eventure.listings.getRemoved()
 
-    return Promise.all([
-      ...modifiedListings.map(listing => listingDataStore.save(listing)),
-      ...removedListings.map(listing => listingDataStore.remove({id: listing.id})),
-      eventureDataStore.save(eventure),
-    ])
+    await Promise.all( modifiedListings.map(listing => listingDataStore.save(listing)) )
+    await Promise.all( removedListings.map(listing => listingDataStore.remove({id: listing.id})) )
+    await eventureDataStore.save(eventure)
 
-  },
+    return get(organizationId, eventure.id)
+  }
 
-  async remove(id, options={}) {
+  async function remove(id, options={}) {
   
     const delMethod = (options.purge) ? 'purge' : 'remove';
 
     await listingDataStore[delMethod]({eventureId: id})
     await eventureDataStore[delMethod]({id})
   }
-})
+
+  return {get, save, remove}
+}
 
 
 

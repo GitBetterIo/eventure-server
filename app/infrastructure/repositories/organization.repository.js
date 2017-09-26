@@ -1,5 +1,5 @@
 
-module.exports = ({organizationDataStore, organizationEntity: Organization}) => ({
+module.exports = ({organizationDataStore, organizationRoot: Organization}) => ({
   get: (id, options) => get(organizationDataStore, Organization, id),
   save: (data, options) => save(organizationDataStore, Organization, data, options),
   remove: (id, options) => remove(organizationDataStore, id, options),
@@ -11,7 +11,7 @@ const get = async (organizationDataStore, Organization, id) => {
   const orgData = await organizationDataStore.findOne({id});
   if (!orgData) throw new Error(`Unknown organization '${id}'`);
 
-  const org = Organization.create(orgData);
+  const org = Organization(orgData);
   return org;
 }
 

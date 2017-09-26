@@ -1,6 +1,7 @@
+const uuid = require('uuid/v4')
 
 
-module.exports = () => {
+module.exports = ({helpers}) => {
 
   const Listing = {
   
@@ -13,9 +14,13 @@ module.exports = () => {
     const missing = requiredFields.filter(fld => !listingData.hasOwnProperty(fld));
     if (missing.length) throw new Error(`Missing required fields for listing creation: [${missing.join(', ')}]`)
   
+    const slug = helpers.slugify(listingData.name)
     const listing = Object.create(listingPrototype)
     
-    return Object.assign(listing, listingData)
+    return Object.assign(listing, listingData, {
+      id: listingData.id || uuid(),
+      slug
+    })
   }
 
   return CreateListing;

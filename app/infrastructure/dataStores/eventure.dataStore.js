@@ -28,7 +28,7 @@ async function find(db, query, options={}) {
     .offset(offset)
 
   if (!query.organizationId) {
-    throw new Error(`Missing required 'organizationId' query parameter`);
+    throw new Error(`Find Eventure: Missing required 'organizationId' query parameter`);
   }
 
   selectQuery.where('organization_id', query.organizationId);
