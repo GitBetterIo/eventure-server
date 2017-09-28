@@ -3,10 +3,10 @@ const router = require('express').Router();
 
 module.exports = (container) => {
   const auth = require('./handlers/auth.handler');
-  const user = require('./handlers/user.handler');
   const org = require('./handlers/org.handler');
   const eventure = require('./handlers/eventure.handler');
   const registration = require('./handlers/registration.handler');
+  const people = require('./handlers/people.handler');
 
 
 
@@ -46,19 +46,22 @@ module.exports = (container) => {
   // TODO
 
   router.use('/logout', auth.logout);
-  router.use('/me', user.me);
-
+  
   router.get('/organization', org.list);
   router.post('/organization', org.create);
   router.get('/organization/:orgId', org.get);
   router.put('/organization/:orgId', org.update);
   router.delete('/organization/:orgId', org.remove);
-
+  
   router.get('/eventure', eventure.list);
   router.post('/eventure', eventure.create);
   router.get('/eventure/:eventureId', eventure.get);
-
+  
   router.post('/eventure/:eventureId/listing', eventure.addListing);
+  
+  router.use('/me', people.me);
+  router.get('/person', people.list)
+  router.put('/person/:personId', people.update)
 
   return router;s
 }

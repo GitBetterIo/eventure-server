@@ -31,19 +31,30 @@ module.exports = ({ dbService: db }) => {
     return (person) ? Object.assign(person, {login}) : null;
   }
 
+  /**
+   * Return an array of People belonging to an organization
+   * Login information is not included in this query
+   * 
+   * @param {String} options.organizationId The organization to search for 
+   * @param {String} options.type Type of person. If blank, the query will return all non-Admins 
+   */
   async function findByOrganization({organizationId, type}) {
-    if (!organizationId) throw new Error ('Missing expected `organizationId` from query')
+    if (!organizationId) throw new Error ('Expected `organizationId` from query')
 
-    const query = db('person').select('*').where({ organizationId })
+    const query = db('person').select('*').where('organization_id', organizationId)
     if (type) {
       query.where({type})
     } else {
       query.whereNot({type: 'admin'})
     }
 
-    const people = await query
+    try {
+      const people = await query
+      return people.map(db.snakeToCamel)
+    } catch (err) {
+      throw err
+    }
 
-    return people.map(db.snakeToCamel)
   }
 
   return {

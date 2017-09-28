@@ -3,7 +3,7 @@ module.exports = ({personReadService, personRoot: Person, errors}) => async (ema
   try {
     const personData = await personReadService.findLoginByEmail(email);
 
-    if (!personData)  throw new errors.AuthenticationError()
+    if (!personData)  throw new errors.AuthenticationError(`Could not find '${email}`)
 
     const person = Person(personData)
 

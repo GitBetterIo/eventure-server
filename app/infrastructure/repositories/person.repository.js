@@ -1,9 +1,9 @@
 
 module.exports = ({ personLoginDataStore, personDataStore, personRoot: Person}) => ({
 
-  get: async (id) => {
-    const person = await personDataStore.findOne({id})
-    const login = await personLoginDataStore.findOne({id})
+  get: async (organizationId, id) => {
+    const person = await personDataStore.findOne({organizationId, id})
+    const login = await personLoginDataStore.findOne({organizationId, id})
 
     return Person(person).addLogin(login)
   },

@@ -10,7 +10,6 @@ module.exports = ({dbService: db}) => {
    * @param {object} options 
    */
   async function find(query, options={}) {
-    const snakeQuery = db.camelToSnake(query);
     const {limit=50, offset=0} = options;
   
     const selectQuery = db
@@ -21,6 +20,7 @@ module.exports = ({dbService: db}) => {
   
   
     if (query.id) selectQuery.where('id', query.id);
+    if (query.organizationId) selectQuery.where('organization_id', query.organizationId)
     if (!query.deleted) selectQuery.where('deleted', 'false');
   
     return selectQuery
@@ -42,7 +42,7 @@ module.exports = ({dbService: db}) => {
    */
   async function save(data, options) {
     const dbData = db.camelToSnake(omit(data, 'deleted'));
-  
+
     const insert = db('person').insert(dbData);
     const update = db.update(dbData)
     const upserted = await db.raw('? ON CONFLICT (id) DO ? RETURNING *', [insert, update]);

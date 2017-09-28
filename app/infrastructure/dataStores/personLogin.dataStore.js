@@ -29,6 +29,7 @@ function find(db, query, options={}) {
 
 
   if (query.id) selectQuery.where('id', query.id);
+  // if (query.organizationId) selectQuery.where('organization_id', query.organizationId)
   if (!query.deleted) selectQuery.where('deleted', 'false');
 
   return selectQuery

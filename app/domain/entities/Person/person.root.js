@@ -31,6 +31,22 @@ module.exports = ({helpers, loginEntity}) => {
       return this
     },
 
+    updateName({firstName, lastName}) {
+      this.firstName = firstName
+      this.lastName = lastName
+      return this
+    },
+
+    updateEmail({email}) {
+      this.email = email
+      return this
+    },
+
+    updateBirthDate({birthDate}) {
+      this.birthDate = birthDate
+      return this
+    },
+
     /**
      * Return the profile portion of the user
      */
