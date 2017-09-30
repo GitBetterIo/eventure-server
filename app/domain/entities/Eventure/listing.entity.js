@@ -9,7 +9,7 @@ module.exports = ({helpers}) => {
   
   const listingPrototype = Object.assign({}, Listing)
   
-  const CreateListing = (listingData) => {
+  const CreateListing = (listingData, feeSchedule) => {
     const requiredFields = ['organizationId', 'eventureId', 'name']
     const missing = requiredFields.filter(fld => !listingData.hasOwnProperty(fld));
     if (missing.length) throw new Error(`Missing required fields for listing creation: [${missing.join(', ')}]`)

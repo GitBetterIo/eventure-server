@@ -15,7 +15,21 @@ describe("Entity Collection", () => {
       assert.equal(col.length, 3)
     })
   })
-  
+
+  describe("updating", () => {
+    it("observes changes in collection items", () => {
+      const col = CreateCollection([ {id: 1}, {id: 2}, {id: 3}, ])
+      const item = col.get(2)
+      
+      assert.equal(col.getModified().length,0)
+      item.prop = 'abc'
+      assert.equal(col.getModified().length,1)
+      assert.equal(col.getModified()[0].prop, 'abc')
+
+
+    })
+  })
+
   describe("Get by status", () => {
     it('Gets new items', () => {
       const col = CreateCollection([ {id: 1}, {id: 2, _status: 'NEW'}, {id: 3}, ])

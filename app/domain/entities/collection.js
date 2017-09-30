@@ -1,8 +1,18 @@
+const observable = require('./observable')
 
 const isObject = (obj) => obj !== null && typeof obj === 'object' && Object.prototype.toString.call(obj) === '[object Object]';
 const NEW = 'NEW';
 const UPDATED = 'UPDATED';
 const REMOVED = 'REMOVED';
+
+const makeObservable = item => {
+  const obs = observable(item)
+  obs.on('changed', (item, name, oldValue, newValue) => {
+    item._status = UPDATED
+  })
+
+  return obs
+}
 
 
 const Collection = {
@@ -71,7 +81,7 @@ const CreateCollection = (items, options) => {
     Object.create(collectionPrototype, collectionProps),
     {
       _pk: options.primaryKey || 'id',
-      _col: items
+      _col: items.map(makeObservable)
     }
   )
 

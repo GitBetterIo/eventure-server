@@ -32,6 +32,7 @@ describe("Eventure Routes", () => {
         startDate: new Date(),
         endDate: new Date(),
       }
+
       chai.request(server)
         .post('/api/v1/eventure')
         .send(evData)
@@ -47,27 +48,34 @@ describe("Eventure Routes", () => {
         .catch(done)
       })
       
-      it("Creates a listing on the testEventure", done => {
-        const listData = {
-          id: uuid(),
-          eventureId: testEventure.id,
-          name: 'testListing',
-          startDate: new Date(),
-          endDate: new Date(),
-        }
-        chai.request(server)
-        .post(`/api/v1/eventure/${testEventure.id}/listing`)
-        .send(listData)
-        .set('Organization', organization.id)
-        .set('Authorization', `Bearer ${accessToken.token}`)
-        .then(res => {
-          assert.propertyVal(res, 'status', 200)
-          assert.isObject(res.body)
-          assert.isArray(res.body.listings)
-          done()
-        })
-        .catch(done)
+    it("Creates a listing on the testEventure", done => {
+      const listData = {
+        eventureId: testEventure.id,
+        name: 'testListing',
+        startDate: new Date(),
+        endDate: new Date(),
+        basePrice: 12
+      }
+      chai.request(server)
+      .post(`/api/v1/eventure/${testEventure.id}/listing`)
+      .send(listData)
+      .set('Organization', organization.id)
+      .set('Authorization', `Bearer ${accessToken.token}`)
+      .then(res => {
+        assert.propertyVal(res, 'status', 200)
+        assert.isObject(res.body)
+        assert.isArray(res.body.listings)
+        done()
       })
+      .catch(res => {
+        if (res.response && res.response.error) {
+          done(res.response.error)
+        } else {
+          done(res)
+        }
+      })
+    })
+      
   })
 
 })

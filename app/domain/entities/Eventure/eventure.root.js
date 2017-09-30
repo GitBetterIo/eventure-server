@@ -21,14 +21,17 @@ module.exports = ({helpers, listingEntity}) => {
   const eventurePrototype = Object.assign({}, Eventure);
   
   // Create
-  const CreateEventure = (eventureData, rawListings) => {
+  const CreateEventure = (eventureData, rawListings, feeSchedule=[]) => {
     
     const requiredFields = ['organizationId', 'name']
     const missing = requiredFields.filter(fld => !eventureData.hasOwnProperty(fld));
     if (missing.length) throw new Error(`Missing required fields for eventure creation: [${missing.join(', ')}]`)
 
     // Create an array of listings
-    const listings = (rawListings || []).map(listingEntity)
+    const listings = (rawListings || []).map(listing => {
+      const listingFeeSchedule = feeSchedule.filter(fs => fs.listingId === listing.id)
+      return listingEntity(listing, listingFeeSchedule)
+    })
     const slug = helpers.slugify(eventureData.name)
     const eventure = Object.create(eventurePrototype)
 

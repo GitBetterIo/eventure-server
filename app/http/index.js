@@ -2,7 +2,6 @@
 const express = require('express');
 const logger = require('morgan');
 const bodyParser = require('body-parser');
-const expressValidator = require('express-validator');
 const expressStatusMonitor = require('express-status-monitor');
 const chalk = require('chalk');
 const session = require('express-session');
@@ -30,7 +29,6 @@ module.exports = (container) => {
   // app.use(logger('dev'));
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
-  app.use(expressValidator());
 
   // app.use(session({
   //   store: new (pgSession(session))({conObject : config.db}),
