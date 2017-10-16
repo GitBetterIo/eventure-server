@@ -66,5 +66,22 @@ describe("Listing Entity", () => {
       assert.equal(listing.feeSchedule[0].feeDate, expected)
     })
 
+    it('formats the date properly from a date string', () => {
+      const d = '2017-01-31'
+      const expected = d
+      const lData = { organizationId: 'abc', eventureId: 'def', name: 'this is a name' }
+      const listing = Listing(lData)
+      const fsi = {
+        listingId: listing.id,
+        feeDate: d,
+        fee: 12,
+      }
+
+      assert.equal(listing.feeSchedule.length, 0)
+      listing.addFeeScheduleItem(fsi)
+      assert.equal(listing.feeSchedule.length, 1)
+      assert.equal(listing.feeSchedule[0].feeDate, expected)
+    })
+
   })
 })
