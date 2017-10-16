@@ -46,4 +46,23 @@ describe("Entity Collection", () => {
       assert.equal(newItems.length, 2)
     })
   })
+
+  describe("Adding to the collection", () => {
+    it('Preserves the prototype chain on add', () => {
+      const proto = { a: 123 }
+      const obj = Object.assign(
+        Object.create(proto),
+        {id: 1, b: 456}
+      )
+      const col = CreateCollection();
+
+      assert.equal(obj.a, 123)
+      col.add(obj)
+      const colObj = col.get(1)
+      assert.equal(obj.a, 123)
+      assert.equal(colObj.id, 1)
+      assert.equal(colObj.b, 456)
+      assert.equal(colObj.a, 123)
+    })
+  })
 })

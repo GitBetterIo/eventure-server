@@ -52,6 +52,30 @@ describe("Observable", () => {
     assert.isNotOk(changed)
     obs.newProp = 2
     assert.isOk(changed)
+  })
+
+
+  it("observes an array", () => {
+    const arr = [1]
+    const obs = observable(arr)
+
+    let changed = false
+    obs.on("changed", () => changed = true)
+  
+    assert.isNotOk(changed)
+    obs.push(2)
+    assert.isOk(changed)
+  })
+  
+  it("observes changes on nested arrays", () => {
+    const obj = {a: 1, b: []}
+    const obs = observable(obj)
     
+    let changed = false
+    obs.on("changed", () => changed = true)
+  
+    assert.isNotOk(changed)
+    obs.b.push(1)
+    assert.isOk(changed)
   })
 })

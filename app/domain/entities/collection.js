@@ -5,10 +5,13 @@ const NEW = 'NEW';
 const UPDATED = 'UPDATED';
 const REMOVED = 'REMOVED';
 
+
 const makeObservable = item => {
   const obs = observable(item)
   obs.on('changed', (item, name, oldValue, newValue) => {
-    item._status = UPDATED
+    if (item._status !== NEW) {
+      item._status = UPDATED
+    }
   })
 
   return obs
@@ -19,7 +22,8 @@ const Collection = {
   get(key) { return this._col.find(i => i[this._pk] === key) },
   getIndex(key) { return this._col.findIndex(i => i[this._pk] === key) },
   add(item) {
-    this._col.push(Object.assign({}, item, {_status: NEW}))
+    item = makeObservable(Object.assign(item, {_status: NEW}))
+    this._col.push(item)
     return this
   },
   remote(item) {
@@ -47,7 +51,8 @@ const Collection = {
   getUpdated() { return this._col.filter(i => i._status === UPDATED) },
   getModified() { return this._col.filter(i => i._status === NEW || i._status === UPDATED) },
   getRemoved() { return this._col.filter(i => i._status === REMOVED) },
-  toJSON() { return this._col; }
+  toJSON() { return this._col; },
+  toArray() { return this._col; },
 }
 
 const arrayMethods = [

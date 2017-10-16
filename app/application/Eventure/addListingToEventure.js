@@ -1,9 +1,18 @@
-
+const uuid = require('uuid/v4')
 
 module.exports = ({eventureRepository, eventureRoot: Eventure}) => async (organizationId, eventureId, listingData) => {
   try {
+    const listingId = uuid()
     const eventure = await eventureRepository.get(organizationId, eventureId)
-    eventure.addListing(listingData)
+
+    eventure.addListing({...listingData, id: listingId})
+
+    if (listingData.registrationOpenDate && listingData.price) {
+      eventure.addFeeScheduleItem(listingId, {
+        feeDate: listingData.registrationOpenDate,
+        fee: listingData.price
+      })
+    }
   
     return eventureRepository.save(organizationId, eventure)
   } catch (err) {

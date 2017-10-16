@@ -16,6 +16,7 @@ const observable = obj => {
 
   const wrap = (target, name, value) => {
     if (notObject(value) && notArray(value)) return value
+    if (value.__isObservable) return value
 
     const obs = observable(value)
     obs.on("changed", (nTarget, nName, nOld, nNew) => {
@@ -23,7 +24,6 @@ const observable = obj => {
     })
 
     return obs
-
   }
 
   const handler = {
@@ -38,6 +38,7 @@ const observable = obj => {
       const oldValue = target[name]
       target[name] = wrap(target, name, newValue)
       events.emit("changed", target, name, oldValue, newValue)
+      return true
     }
   }
 

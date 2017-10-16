@@ -1,7 +1,7 @@
 const isString = require('lodash/isString')
 const isObject = require('lodash/isObject')
 
-module.exports = ({eventureDataStore, listingDataStore, feeScheduleDataStore, eventureRoot: Eventure}) => {
+module.exports = ({eventureDataStore, listingDataStore, eventureRoot: Eventure}) => {
 
   async function get(organizationId, id) {
     
@@ -9,11 +9,10 @@ module.exports = ({eventureDataStore, listingDataStore, feeScheduleDataStore, ev
 
     let data = await eventureDataStore.findOne({organizationId, id})
     let listings = await listingDataStore.find({eventureId: id, organizationId})
-    let feeSchedule = await feeScheduleDataStore.find({eventureId: id, organizationId})
 
     if (!data) throw new Error(`Unknown Eventure '${id}'`);
 
-    const ev = Eventure(data, listings, feeSchedule);
+    const ev = Eventure(data, listings);
     return ev;
   }
 

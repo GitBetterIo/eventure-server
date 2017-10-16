@@ -3,8 +3,16 @@
 module.exports = (err, req, res, next) => {
   const status = err.status || 400;
 
-  // if (err.isJoi) {
-  // }
+  if (err.isJoi) {
+    const details = err.details.reduce((errors, err) => Object.assign(errors, {[err.path.join('.')]: err.message}), {})
+    console.log(details)
+    return res.status(400).json({
+      error: true,
+      message: "The input was not valid",
+      details
+    })
+  }
+
   console.log(err.stack);
 
 

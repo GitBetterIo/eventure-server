@@ -22,7 +22,7 @@ describe("Eventure Routes", () => {
     await truncateAll()
   })
 
-  describe("Creating", () => {
+  describe("Creating Eventure", () => {
     let testEventure
 
     it("creates an eventure", done => {
@@ -54,7 +54,7 @@ describe("Eventure Routes", () => {
         name: 'testListing',
         startDate: new Date(),
         endDate: new Date(),
-        basePrice: 12
+        price: 0
       }
       chai.request(server)
       .post(`/api/v1/eventure/${testEventure.id}/listing`)
@@ -74,6 +74,33 @@ describe("Eventure Routes", () => {
           done(res)
         }
       })
+    })
+
+    it("Creates as listing with an initial fee schedule", async () => {
+      const regDate = new Date()
+      const listData = {
+        eventureId: testEventure.id,
+        name: 'testListing2',
+        startDate: new Date(),
+        endDate: new Date(),
+        registrationOpenDate: regDate,
+        price: 12
+      }
+
+      const res = await chai.request(server) 
+        .post(`/api/v1/eventure/${testEventure.id}/listing`)
+        .send(listData)
+        .set('Organization', organization.id)
+        .set('Authorization', `Bearer ${accessToken.token}`)
+
+        assert.propertyVal(res, 'status', 200)
+        assert.isObject(res.body)
+        assert.isArray(res.body.listings)
+
+        const listing = res.body.listings.find(l => l.name === listData.name)
+        assert.isOk(listing)
+        assert.equal(listing.feeSchedule.length, 1)
+
     })
       
   })
