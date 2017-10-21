@@ -15,7 +15,7 @@ const indexedServiceFormat = (name, descriptor) => {
 module.exports = ({config}) => {
   const container = awilix.createContainer()
   const infrastructureTypes = ['service', 'dataStore', 'repository', 'read.service'].join('|');
-  const domainTypes = ['entity', 'root'].join('|')
+  const domainTypes = ['entity', 'root', 'object'].join('|')
 
   container.registerValue({
     config,

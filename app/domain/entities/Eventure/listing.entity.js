@@ -1,8 +1,5 @@
 const uuid = require('uuid/v4')
 const CreateCollection = require('../collection')
-const isString = require('lodash/isString')
-const formatDate = require('date-fns/format')
-const parseDate = require('date-fns/parse')
 
 
 module.exports = ({helpers}) => {
@@ -10,10 +7,7 @@ module.exports = ({helpers}) => {
   const Listing = {
     addFeeScheduleItem(feeScheduleData) {
 
-      // format the date to ISO 8601 YYYY-MM-DD
-      const feeDate = isString(feeScheduleData.feeDate) 
-        ? formatDate(parseDate(feeScheduleData.feeDate), 'YYYY-MM-DD')
-        : formatDate(new Date(feeScheduleData.feeDate), 'YYYY-MM-DD')
+      
       const newFeeScheduleItem = Object.assign(feeScheduleData, {feeDate})
 
       // There can only be a one fee schedule item per day
