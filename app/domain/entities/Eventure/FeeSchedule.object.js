@@ -93,10 +93,18 @@ module.exports = ({}) => {
   
   const FeeSchedulePrototype = Object.assign({}, FeeSchedule)
   
-  const CreateFeeSchedule = () => {
+  const CreateFeeSchedule = (fsData) => {
+    fsData = fsData || [];
+
+    if (!Array.isArray(fsData)) {
+      throw new Error('Expected an array when creating a fee schedule')
+    }
+
     const feeSchedule = Object.create(FeeSchedulePrototype)
     feeSchedule.fees = []
     feeSchedule.closeDate = feeSchedule.getCloseDate()
+
+    fsData.forEach(fee => feeSchedule.addFee(fee))
 
     return feeSchedule
   }

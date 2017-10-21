@@ -16,6 +16,18 @@ describe.only("feeSchedule", () => {
     assert.isArray(fs.fees)
   })
 
+  it("creates a feeSchedule from a starting array", () => {
+    const fsData = [
+      {feeDate: '2017-01-01', fee: 111},
+      {feeDate: '2017-02-01', fee: 222},
+      {feeDate: '2017-03-01', fee: 333, close: true},
+    ]
+    const fs = FeeSchedule(fsData)
+    assert.isOk(fs)
+    assert.isArray(fs.fees)
+    assert.lengthOf(fs.fees, fsData.length)
+  })
+
   describe("adding dates", () => {
     it("adds a fee", () => {
       const fs = FeeSchedule()
