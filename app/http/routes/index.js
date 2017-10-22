@@ -58,6 +58,8 @@ module.exports = (container) => {
   router.get('/eventure/:eventureId', eventure.get);
   
   router.post('/eventure/:eventureId/listing', eventure.addListing);
+
+  router.put('/eventure/:eventureId/listing/:listingId/feeSchedule', eventure.updateFeeSchedule)
   
   router.use('/me', people.me);
   router.get('/person', people.list)

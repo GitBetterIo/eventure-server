@@ -100,7 +100,9 @@ module.exports = ({}) => {
       throw new Error('Expected an array when creating a fee schedule')
     }
 
-    const feeSchedule = Object.create(FeeSchedulePrototype)
+    const feeSchedule = Object.create(FeeSchedulePrototype, {
+      length: {get: () => feeSchedule.fees.length}
+    })
     feeSchedule.fees = []
     feeSchedule.closeDate = feeSchedule.getCloseDate()
 

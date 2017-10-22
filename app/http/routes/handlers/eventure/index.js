@@ -69,5 +69,18 @@ module.exports = ({
         return next(err)
       }
     }
-  ]
+  ],
+
+  updateFeeSchedule: async (req, res, next) => {
+    try {
+      const {eventureService, currentUser, currentOrganization: {id: organizationId}} = req.container.cradle
+      const { eventureId, listingId } = req.params
+      const fees = req.body
+      const eventure = await eventureService.updateFeeSchedule(organizationId, eventureId, listingId, fees)
+
+      return res.json(eventure)
+    } catch(err) {
+      return next(err)
+    }
+  }
 })

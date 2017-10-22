@@ -43,7 +43,6 @@ describe("Eventure Entity", () => {
       const listing = eventure.listings.toArray()[0]
       
       assert.isOk(listing)
-      assert.isFunction(listing.addFeeScheduleItem)
     })
     
     it("prevents duplicate listing names", () => {
@@ -71,10 +70,25 @@ describe("Eventure Entity", () => {
       
       eventure.addListing(lst)
       const listing = eventure.listings.toArray()[0]
+      
+      assert.equal(listing.feeSchedule.fees.length, 0)
+      eventure.addFee(listing.id, fee)
+      assert.equal(listing.feeSchedule.fees.length, 1)
+    })
 
-      assert.equal(listing.feeSchedule.length, 0)
-      eventure.addFeeScheduleItem(listing.id, fee)
-      assert.equal(listing.feeSchedule.length, 1)
+    
+    it("marks a listing as updated when the fee schedule changes", () => {
+      const eventure = Eventure({organizationId: uuid(), name: 'testEv'})
+      eventure.addListing({eventureId: eventure.id, name: 'testList'})
+      
+      const listing = eventure.listings.toArray()[0]
+
+      assert.equal(eventure.listings.getModified().length, 1)
+      eventure.listings.commit()
+      assert.equal(eventure.listings.getModified().length, 0)
+      eventure.addFee(listing.id, {feeDate: '2017-01-01', fee: 444})
+      assert.equal(eventure.listings.getModified().length, 1)
+
     })
   })
 })

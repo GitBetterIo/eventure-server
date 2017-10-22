@@ -9,6 +9,7 @@ const REMOVED = 'REMOVED';
 const makeObservable = item => {
   const obs = observable(item)
   obs.on('changed', (item, name, oldValue, newValue) => {
+    if (name === '_status') return
     if (item._status !== NEW) {
       item._status = UPDATED
     }
@@ -51,6 +52,14 @@ const Collection = {
   getUpdated() { return this._col.filter(i => i._status === UPDATED) },
   getModified() { return this._col.filter(i => i._status === NEW || i._status === UPDATED) },
   getRemoved() { return this._col.filter(i => i._status === REMOVED) },
+  commit() {
+    this._col = this._col
+      .filter(i => i._status !== REMOVED)
+      .map(i => {
+        i._status = undefined;
+        return i
+      })
+  },
   toJSON() { return this._col; },
   toArray() { return this._col; },
 }

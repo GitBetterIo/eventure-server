@@ -4,7 +4,7 @@ const config = require('../../../../../config')
 
 const toISODate = d => d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate()
 
-describe.only("feeSchedule", () => {
+describe("feeSchedule", () => {
   before(() => {
     const container = require('../../../../container')({config})
     FeeSchedule = container.cradle.feeScheduleObject

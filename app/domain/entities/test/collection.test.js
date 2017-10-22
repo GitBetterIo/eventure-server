@@ -14,6 +14,12 @@ describe("Entity Collection", () => {
       assert.isOk(col)
       assert.equal(col.length, 3)
     })
+    
+    it('converts each item to an observable', () => {
+      const col = CreateCollection([ {id: 1}, {id: 2}, {id: 3}, ])
+      col.forEach(c => assert.isOk(c.__isObservable))
+
+    })
   })
 
   describe("updating", () => {
@@ -25,8 +31,34 @@ describe("Entity Collection", () => {
       item.prop = 'abc'
       assert.equal(col.getModified().length,1)
       assert.equal(col.getModified()[0].prop, 'abc')
+    })
+    
+    it("observes changes in nested collection Items", () => {
+      const col = CreateCollection([
+        {id: 1, a: {b: 111, c: 222}},
+        {id: 2, a: {b: 333, c: 444}},
+      ])
+      
+      const item = col.get(1)
 
+      assert.equal(col.getModified().length,0)
+      item.a.b = 555
+      assert.equal(col.getModified().length,1)
+      assert.equal(col.getModified()[0].a.b, 555)
+    })
 
+    it("observes changes in deeply nested collection Items", () => {
+      const col = CreateCollection([
+        {id: 1, a: {b: [1,2,3], c: 222}},
+        {id: 2, a: {b: [1,2,3], c: 444}},
+      ])
+      
+      const item = col.get(1)
+
+      assert.equal(col.getModified().length,0)
+      item.a.b.push(4)
+      assert.equal(col.getModified().length,1)
+      assert.deepEqual(col.getModified()[0].a.b, [1,2,3,4])
     })
   })
 

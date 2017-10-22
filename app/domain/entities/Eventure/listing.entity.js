@@ -1,22 +1,12 @@
 const uuid = require('uuid/v4')
-const CreateCollection = require('../collection')
+const omit = require('lodash/omit')
 
 
-module.exports = ({helpers}) => {
+module.exports = ({helpers, feeScheduleObject: FeeSchedule}) => {
 
   const Listing = {
-    addFeeScheduleItem(feeScheduleData) {
-
-      
-      const newFeeScheduleItem = Object.assign(feeScheduleData, {feeDate})
-
-      // There can only be a one fee schedule item per day
-      // TODO: Just replace the previous feeSchedule
-      const existingItem = this.feeSchedule.find(i => i.feeDate === feeDate)
-
-      if (existingItem) throw new Error(`There already exists a fee schedule item for the date ${feeDate}`)
-
-      this.feeSchedule.push(newFeeScheduleItem)
+    addFee(fee) {
+      return this.feeSchedule.addFee(fee)
     },
   
   }
@@ -26,18 +16,18 @@ module.exports = ({helpers}) => {
   const CreateListing = (listingData) => {
     const requiredFields = ['organizationId', 'eventureId', 'name']
     const missing = requiredFields.filter(fld => !listingData.hasOwnProperty(fld));
-    if (missing.length) throw new Error(`Missing required fields for listing creation: [${missing.join(', ')}]`)
+
+    if (missing.length) {
+      throw new Error(`Missing required fields for listing creation: [${missing.join(', ')}]`)
+    }
   
-    const slug = helpers.slugify(listingData.name)
-    const feeSchedule = listingData.feeSchedule || []
-    
     return Object.assign(
       Object.create(listingPrototype),
-      listingData, 
+      omit(listingData, ['feeSchedule']), 
       {
         id: listingData.id || uuid(),
-        feeSchedule,
-        slug,
+        slug: helpers.slugify(listingData.name),
+        feeSchedule: FeeSchedule(listingData.feeSchedule),
       })
   }
 

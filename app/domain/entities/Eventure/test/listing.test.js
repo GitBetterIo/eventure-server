@@ -45,7 +45,7 @@ describe("Listing Entity", () => {
         fee: 12,
       }
       assert.equal(listing.feeSchedule.length, 0)
-      listing.addFeeScheduleItem(fsi)
+      listing.addFee(fsi)
       assert.equal(listing.feeSchedule.length, 1)
       
     })
@@ -61,9 +61,9 @@ describe("Listing Entity", () => {
         fee: 12,
       }
       assert.equal(listing.feeSchedule.length, 0)
-      listing.addFeeScheduleItem(fsi)
+      listing.addFee(fsi)
       assert.equal(listing.feeSchedule.length, 1)
-      assert.equal(listing.feeSchedule[0].feeDate, expected)
+      assert.equal(listing.feeSchedule.fees[0].feeDate, expected)
     })
 
     it('formats the date properly from a date string', () => {
@@ -78,9 +78,9 @@ describe("Listing Entity", () => {
       }
 
       assert.equal(listing.feeSchedule.length, 0)
-      listing.addFeeScheduleItem(fsi)
+      listing.addFee(fsi)
       assert.equal(listing.feeSchedule.length, 1)
-      assert.equal(listing.feeSchedule[0].feeDate, expected)
+      assert.equal(listing.feeSchedule.fees[0].feeDate, expected)
     })
 
   })

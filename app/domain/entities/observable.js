@@ -1,9 +1,11 @@
 const EventEmitter = require('events').EventEmitter
-const isObject = require('lodash/isPlainObject')
+const isObject = require('lodash/isObject')
 const isArray = require('lodash/isArray')
+const isDate = require('lodash/isDate')
 
-const notObject = o => !isObject(o)
+const notObject = o => !isObject(o) || isDate(o)
 const notArray = a => !isArray(a)
+
 
 const eventFns = [
   "on", "removeListener", "once", "removeAllListeners", "listeners", 

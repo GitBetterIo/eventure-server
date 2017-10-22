@@ -26,17 +26,24 @@ module.exports = ({helpers, listingEntity}) => {
      * @param {uuid} listingId ID of the listing to edit
      * @param {object} feeSchedule The fee schedule item to add
      */
-    addFeeScheduleItem(listingId, feeSchedule) {
+    addFee(listingId, feeSchedule) {
       const listing = this.listings.get(listingId)
 
       if (!listing) throw new Error(`Cannot add fee schedule item: can't find listing`)
+      
+      listing.addFee(feeSchedule)
+      
+      return this
+    },
+    
+    updateFeeSchedule(listingId, fees) {
+      const listing = this.listings.get(listingId)
+      if (!listing) throw new Error(`Cannot update fee schedule item: can't find listing ${listingId}`)
 
-      // TODO: Check that the fee schedule item is not before the eventure registration open date
-      // ALT: Updated the eventure registration open to the earliest fee date
-      listing.addFeeScheduleItem(feeSchedule)
+      fees.forEach(fee => listing.addFee(fee))
 
       return this
-    }
+    },
   }
   
   const eventurePrototype = Object.assign({}, Eventure);
