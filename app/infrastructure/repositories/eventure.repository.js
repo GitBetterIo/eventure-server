@@ -32,11 +32,8 @@ module.exports = ({eventureDataStore, listingDataStore, eventureRoot: Eventure})
 
     if (organizationId !== eventure.organizationId) throw new Error(`Attempting to save an eventure to another organization`)
 
-    console.log("ALL LISTING", JSON.stringify(eventure.listings, null, 2))
     const modifiedListings = eventure.listings.getModified()
     const removedListings = eventure.listings.getRemoved()
-
-    console.log("modified listings", modifiedListings)
 
     await Promise.all( modifiedListings.map(listing => listingDataStore.save(listing)) )
     await Promise.all( removedListings.map(listing => listingDataStore.remove({id: listing.id})) )

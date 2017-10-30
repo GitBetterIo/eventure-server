@@ -65,5 +65,7 @@ module.exports = (container) => {
   router.get('/person', people.list)
   router.put('/person/:personId', people.update)
 
+  router.post('/registration', registration.newRegistration)
+
   return router;s
 }

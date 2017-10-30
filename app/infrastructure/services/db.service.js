@@ -3,11 +3,11 @@ const Knex = require('knex');
 
 module.exports = ({config}) => {
 
-  function snakeToCamel(s){
+  function stringSnakeToCamel(s){
     return s.replace(/(_\w)/g, m => m[1].toUpperCase() );
   }
 
-  function camelToSnake(s) {
+  function stringCamelToSnake(s) {
     return s.replace(/([A-Z])/g, m => "_" + m.toLowerCase() );
   }
 
@@ -33,8 +33,10 @@ module.exports = ({config}) => {
 
 
   const db = Knex(config.db);
-  db.snakeToCamel = alterKeys(snakeToCamel);
-  db.camelToSnake = alterKeys(camelToSnake);
+  db.stringSnakeToCamel = stringSnakeToCamel
+  db.stringCamelToSnake = stringCamelToSnake
+  db.snakeToCamel = alterKeys(stringSnakeToCamel);
+  db.camelToSnake = alterKeys(stringCamelToSnake);
   db.getTableNames = getTableNames;
 
   return db;

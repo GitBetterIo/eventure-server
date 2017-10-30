@@ -30,7 +30,6 @@ describe("HTTP Validators", () => {
 
         try {
           const req = await validate(validateCreateListing, listData)
-          // console.log("SUCCESS", req)
         } catch (err) {
           console.log(err.details)
           assert(false, err.message)

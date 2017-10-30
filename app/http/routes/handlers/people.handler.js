@@ -5,9 +5,10 @@ module.exports = {
       personReadService,
       currentOrganization: {id: organizationId}
     } = req.container.cradle
+    const {terms, type} = req.query
     
     try {
-      const people = await personReadService.findByOrganization({organizationId})
+      const people = await personReadService.find({organizationId, terms, type})
       return res.json(people)
     } catch (err) {
       return next(err)

@@ -40,12 +40,41 @@ module.exports = ({ dbService: db }) => {
    */
   async function findByOrganization({organizationId, type}) {
     if (!organizationId) throw new Error ('Expected `organizationId` from query')
-
+    
     const query = db('person').select('*').where('organization_id', organizationId)
     if (type) {
       query.where({type})
     } else {
       query.whereNot({type: 'admin'})
+    }
+    
+    try {
+      const people = await query
+      return people.map(db.snakeToCamel)
+    } catch (err) {
+      throw err
+    }
+    
+  }
+  
+  async function find({organizationId, terms, type}, options = {}) {
+    if (!organizationId) throw new Error ('Expected `organizationId` from query')
+
+    let {limit, offset, fields} = options
+    fields = (fields || ['*']).map(fld => db.stringCamelToSnake(fld))
+    
+    const query = db('person').select(...fields).where('organization_id', organizationId)
+    if (type) {
+      query.where({type})
+    } else {
+      query.whereNot({type: 'admin'})
+    }
+    if (terms) {
+      query.where(function() {
+        this.where('first_name', 'like', `%${terms}%`)
+          .orWhere('last_name', 'like', `%${terms}%`)
+          .orWhere('email', 'like', `%${terms}%`)
+      })
     }
 
     try {
@@ -54,6 +83,9 @@ module.exports = ({ dbService: db }) => {
     } catch (err) {
       throw err
     }
+    
+    
+
 
   }
 
@@ -62,6 +94,7 @@ module.exports = ({ dbService: db }) => {
     findByToken,
     findById,
     findByOrganization,
+    find,
   }
   
 }
