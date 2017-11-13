@@ -78,7 +78,7 @@ describe('Authentication Routes', () => {
         .post('/api/v1/login')
         .send({email: testEmail, password: testPassword})
         .then(res => {
-          token = res.body.token.token;
+          token = res.body.token;
           assert.isObject(res.body);
           assert.isString(res.body.token);
           return accessTokenDataStore.findOne({token}, {limit:1});

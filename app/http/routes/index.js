@@ -5,7 +5,7 @@ module.exports = (container) => {
   const auth = require('./handlers/auth.handler');
   const org = require('./handlers/org.handler');
   const eventure = require('./handlers/eventure');
-  const registration = require('./handlers/registration.handler');
+  const registration = require('./handlers/registration');
   const people = require('./handlers/people.handler');
 
 

@@ -8,7 +8,7 @@ module.exports = ({eventureRepository, eventureRoot: Eventure}) => async (organi
     eventure.addListing({...listingData, id: listingId})
 
     if (listingData.registrationOpenDate && listingData.price) {
-      eventure.addFeeScheduleItem(listingId, {
+      eventure.addFee(listingId, {
         feeDate: listingData.registrationOpenDate,
         fee: listingData.price
       })

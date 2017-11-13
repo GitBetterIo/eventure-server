@@ -1,4 +1,4 @@
-const awilix = require('awilix')
+const { createContainer, Lifetime } = require('awilix')
 
 
 const entityFormat = (name, descriptor) => {
@@ -12,11 +12,17 @@ const indexedServiceFormat = (name, descriptor) => {
   return entity.charAt(0).toLowerCase() + entity.substring(1) + 'Service';
 }
 
+// const config = require('../config')
+
+// const container = createContainer()
+
+
 module.exports = ({config}) => {
-  const container = awilix.createContainer()
+  const container = createContainer()
   const infrastructureTypes = ['service', 'dataStore', 'repository', 'read.service'].join('|');
   const domainTypes = ['entity', 'root', 'object'].join('|')
-
+  
+  
   container.registerValue({
     config,
     errors: require('./infrastructure/errors'),

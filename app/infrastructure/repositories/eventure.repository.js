@@ -35,9 +35,9 @@ module.exports = ({eventureDataStore, listingDataStore, eventureRoot: Eventure})
     const modifiedListings = eventure.listings.getModified()
     const removedListings = eventure.listings.getRemoved()
 
+    await eventureDataStore.save(eventure)
     await Promise.all( modifiedListings.map(listing => listingDataStore.save(listing)) )
     await Promise.all( removedListings.map(listing => listingDataStore.remove({id: listing.id})) )
-    await eventureDataStore.save(eventure)
 
     return get(organizationId, eventure.id)
   }

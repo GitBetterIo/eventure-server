@@ -2,12 +2,11 @@ const createDatastore = require('./datastore')
 
 module.exports = ({dbService}) => {
   const datastore = createDatastore({
-    tableName: 'access_token',
+    tableName: 'registration',
     db: dbService,
-    queryable: ['personId', 'token'],
-    softDelete: false,
-    primaryKey: 'token',
+    queryable: ['id', 'eventureId', 'listingId', 'groupId', 'participantId'],
   })
 
   return datastore
 }
+

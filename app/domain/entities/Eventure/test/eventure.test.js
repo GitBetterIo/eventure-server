@@ -37,13 +37,13 @@ describe("Eventure Entity", () => {
       }
       
       assert.equal(eventure.listings.length, 0)
-      eventure.addListing(lst)
+      const listing = eventure.addListing(lst)
       assert.equal(eventure.listings.length, 1)
-      
-      const listing = eventure.listings.toArray()[0]
-      
       assert.isOk(listing)
+      assert.isOk(listing.slug)
+      assert.deepEqual(listing.id, eventure.listings.toArray()[0].id)
     })
+
     
     it("prevents duplicate listing names", () => {
       const ev = {

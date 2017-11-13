@@ -1,8 +1,7 @@
-const uuid = require('uuid/v4')
 const CreateCollection = require('../collection')
 
 
-module.exports = ({helpers, listingEntity}) => {
+module.exports = ({helpers, listingEntity, idService}) => {
 
   const Eventure = {
     /**
@@ -18,6 +17,8 @@ module.exports = ({helpers, listingEntity}) => {
 
       const listing = listingEntity(listingData)
       this.listings.add(listing)
+
+      return listing
     },
 
     /**
@@ -67,7 +68,7 @@ module.exports = ({helpers, listingEntity}) => {
       Object.create(eventurePrototype), 
       eventureData, 
       {
-        id: eventureData.id || uuid(),
+        id: eventureData.id || idService.createId(),
         slug,
         listings: CreateCollection(listings), 
       })
